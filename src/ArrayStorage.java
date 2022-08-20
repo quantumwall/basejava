@@ -1,25 +1,31 @@
+import java.util.Arrays;
+
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
-    private int index = 0;
+    private int size = 0;
 
     void clear() {
-        for(int i = 0; i < index; i++) {
-            storage[i] = null;
-        }
-        index = 0;
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
     }
 
     void save(Resume r) {
-        if(index < storage.length) {
-            storage[index++] = r;
+        if(size < storage.length) {
+            for(int i = 0; i < size; i++) {
+                if(storage[i].uuid.equals(r.uuid)) {
+                    System.out.println("Резюме уже присутствует в хранилище");
+                    return;
+                }
+            }
+            storage[size++] = r;
         }
     }
 
     Resume get(String uuid) {
-        for(int i = 0; i < index; i++) {
+        for(int i = 0; i < size; i++) {
             if(storage[i].uuid.equals(uuid)) {
                 return storage[i];
             }
@@ -28,10 +34,10 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
-        for(int i = 0; i < index; i++) {
+        for(int i = 0; i < size; i++) {
             if(storage[i].uuid.equals(uuid)) {
-                System.arraycopy(storage, i + 1, storage, i, index - i - 1);
-                storage[--index] = null;
+                storage[i] = storage[size - 1];
+                storage[--size] = null;
                 break;
             }
         }
@@ -41,12 +47,10 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] allResume = new Resume[index];
-        System.arraycopy(storage, 0, allResume, 0, index);
-        return allResume;
+        return Arrays.copyOf(storage, size);
     }
 
     int size() {
-        return index;
+        return size;
     }
 }
