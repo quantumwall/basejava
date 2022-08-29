@@ -3,3 +3,6 @@ out
 *.iml
 log
 /basejava/
+/build.xml
+/manifest.mf
+/nbproject/
