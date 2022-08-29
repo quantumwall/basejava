@@ -12,17 +12,16 @@ public class SortedArrayStorage extends AbstractArrayStorage {
             return;
         }
         int index = Arrays.binarySearch(storage, 0, size, r);
-        if(index < 0) {
-            index = Math.abs(index + 1);
-            for(int i = size; i > index; i--) {
-                storage[i] = storage[i - 1];
-            }
-            storage[index] = r;
-            size++;
-            
-        } else {
+        if(index >= 0) {
             System.out.printf("The resume %s is already exists\n", r);
+            return;
         }
+        index = Math.abs(index + 1);
+        for(int i = size; i > index; i--) {
+            storage[i] = storage[i - 1];
+        }
+        storage[index] = r;
+        size++;
     }
 
     @Override
