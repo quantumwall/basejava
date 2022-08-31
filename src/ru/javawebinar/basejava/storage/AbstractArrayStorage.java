@@ -9,7 +9,7 @@ import ru.javawebinar.basejava.model.Resume;
 public abstract class AbstractArrayStorage implements Storage {
 
     protected static final int STORAGE_LIMIT = 10000;
-    protected final Resume[] STORAGE = new Resume[STORAGE_LIMIT];
+    protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
     @Override
@@ -18,24 +18,56 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     @Override
+    public void clear() {
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
+    }
+    
+    @Override
+    public Resume[] getAll() {
+        return Arrays.copyOf(storage, size);
+    }
+    
+    @Override
     public final Resume get(final String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
             System.out.println("Resume " + uuid + " is not found");
             return null;
         }
-        return STORAGE[index];
+        return storage[index];
     }
     
     @Override
-    public void clear() {
-        Arrays.fill(STORAGE, 0, size, null);
-        size = 0;
+    public final void save(Resume r) {
+        if(size >= STORAGE_LIMIT) {
+            System.out.println("Storage is full");
+            return;
+        }
+        int index = getIndex(r.getUuid());
+        if(index > -1) {
+            System.out.printf("Resume %s is already present\n", r);
+            return;
+        }
+        index = Math.abs(index + 1);
+        for(int i = size; i > index; i--) {
+            storage[i] = storage[i - 1];
+        }
+        storage[index] = r;
+        size++;
     }
-    
+
     @Override
-    public Resume[] getAll() {
-        return Arrays.copyOf(STORAGE, size);
+    public final void delete(String uuid) {
+        int index = getIndex(uuid);
+        if(index < 0) {
+            System.out.printf("The resume %s is not found\n", uuid);
+            return;
+        }
+        for(int i = index; i < size; i++) {
+            storage[i] = storage[i + 1];
+        }
+        storage[size--] = null;
     }
     
     @Override
@@ -45,8 +77,8 @@ public abstract class AbstractArrayStorage implements Storage {
             System.out.printf("Resume %s is not found\n", r);
             return;
         } 
-        STORAGE[index] = r;
+        storage[index] = r;
     }
-
+    
     protected abstract int getIndex(final String uuid);
 }

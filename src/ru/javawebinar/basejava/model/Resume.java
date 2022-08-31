@@ -47,13 +47,6 @@ public class Resume implements Comparable<Resume> {
 
     @Override
     public int compareTo(final Resume r) {
-        final String rUuid = r.getUuid();
-        final String currentUuid = uuid;
-        if(rUuid.startsWith("uuid")) {
-            int rDigits = Integer.valueOf(rUuid.substring(4, rUuid.length()));
-            int currentDigits = Integer.valueOf(uuid.substring(4, uuid.length()));
-            return Integer.compare(currentDigits, rDigits);
-        }
-        return currentUuid.compareTo(rUuid);
+        return uuid.compareTo(r.getUuid());
     }
 }
