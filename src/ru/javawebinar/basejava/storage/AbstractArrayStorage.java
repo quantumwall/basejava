@@ -50,11 +50,7 @@ public abstract class AbstractArrayStorage implements Storage {
             return;
         }
         index = Math.abs(index + 1);
-        for(int i = size; i > index; i--) {
-            storage[i] = storage[i - 1];
-        }
-        storage[index] = r;
-        size++;
+        insertResume(r, index);
     }
 
     @Override
@@ -64,10 +60,7 @@ public abstract class AbstractArrayStorage implements Storage {
             System.out.printf("The resume %s is not found\n", uuid);
             return;
         }
-        for(int i = index; i < size; i++) {
-            storage[i] = storage[i + 1];
-        }
-        storage[size--] = null;
+        deleteResume(index);
     }
     
     @Override
@@ -81,4 +74,8 @@ public abstract class AbstractArrayStorage implements Storage {
     }
     
     protected abstract int getIndex(final String uuid);
+    
+    protected abstract void insertResume(Resume r, int index);
+    
+    protected abstract void deleteResume(int index);
 }
