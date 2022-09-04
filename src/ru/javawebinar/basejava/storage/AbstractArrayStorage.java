@@ -22,35 +22,34 @@ public abstract class AbstractArrayStorage implements Storage {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
-    
+
     @Override
     public Resume[] getAll() {
         return Arrays.copyOf(storage, size);
     }
-    
+
     @Override
     public final Resume get(final String uuid) {
         int index = getIndex(uuid);
-        if (index < 0) {
+        if(index < 0) {
             System.out.println("Resume " + uuid + " is not found");
             return null;
         }
         return storage[index];
     }
-    
+
     @Override
     public final void save(Resume r) {
+        int index = getIndex(r.getUuid());
         if(size >= STORAGE_LIMIT) {
             System.out.println("Storage is full");
-            return;
-        }
-        int index = getIndex(r.getUuid());
-        if(index > -1) {
+        } else if(index > -1) {
             System.out.printf("Resume %s is already present\n", r);
-            return;
+        } else {
+            index = Math.abs(index + 1);
+            insertResume(r, index);
+            size++;
         }
-        index = Math.abs(index + 1);
-        insertResume(r, index);
     }
 
     @Override
@@ -61,21 +60,22 @@ public abstract class AbstractArrayStorage implements Storage {
             return;
         }
         deleteResume(index);
+        storage[--size] = null;
     }
-    
+
     @Override
     public final void update(final Resume r) {
         int index = getIndex(r.getUuid());
         if(index < 0) {
             System.out.printf("Resume %s is not found\n", r);
             return;
-        } 
+        }
         storage[index] = r;
     }
-    
+
     protected abstract int getIndex(final String uuid);
-    
+
     protected abstract void insertResume(Resume r, int index);
-    
+
     protected abstract void deleteResume(int index);
 }
