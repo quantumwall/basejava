@@ -1,6 +1,9 @@
 package ru.javawebinar.basejava.storage;
 
 import java.util.Arrays;
+import ru.javawebinar.basejava.exception.ExistStorageException;
+import ru.javawebinar.basejava.exception.NotExistStorageException;
+import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 /**
@@ -32,8 +35,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public final Resume get(final String uuid) {
         int index = getIndex(uuid);
         if(index < 0) {
-            System.out.println("Resume " + uuid + " is not found");
-            return null;
+            throw new NotExistStorageException(uuid);
         }
         return storage[index];
     }
@@ -42,9 +44,9 @@ public abstract class AbstractArrayStorage implements Storage {
     public final void save(Resume r) {
         int index = getIndex(r.getUuid());
         if(size >= STORAGE_LIMIT) {
-            System.out.println("Storage is full");
+            throw new StorageException("Storage overflow", r.getUuid());
         } else if(index > -1) {
-            System.out.printf("Resume %s is already present\n", r);
+            throw new ExistStorageException(r.getUuid());
         } else {
             index = Math.abs(index + 1);
             insertResume(r, index);
@@ -56,8 +58,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public final void delete(String uuid) {
         int index = getIndex(uuid);
         if(index < 0) {
-            System.out.printf("The resume %s is not found\n", uuid);
-            return;
+            throw new NotExistStorageException(uuid);
         }
         deleteResume(index);
         storage[--size] = null;
@@ -67,8 +68,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public final void update(final Resume r) {
         int index = getIndex(r.getUuid());
         if(index < 0) {
-            System.out.printf("Resume %s is not found\n", r);
-            return;
+            throw new NotExistStorageException(r.getUuid());
         }
         storage[index] = r;
     }
