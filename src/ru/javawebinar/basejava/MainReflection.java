@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import ru.javawebinar.basejava.model.Resume;
 
 public class MainReflection {
+
     public static void main(String[] args) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Resume r = new Resume();
         Field field = r.getClass().getDeclaredFields()[0];
@@ -16,5 +17,5 @@ public class MainReflection {
         System.out.println(invokeResult);
         System.out.println(r);
     }
-    
+
 }

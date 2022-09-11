@@ -1,13 +1,14 @@
 package ru.javawebinar.basejava.storage;
 
+import static ru.javawebinar.basejava.storage.AbstractArrayStorage.STORAGE_LIMIT;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
-import static ru.javawebinar.basejava.storage.AbstractArrayStorage.STORAGE_LIMIT;
 
 public abstract class AbstractArrayStorageTest {
 
@@ -42,7 +43,7 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void getAll(Resume... expResult) {
-        if(expResult.length == 0) {
+        if (expResult.length == 0) {
             expResult = new Resume[]{
                 new Resume("uuid1"),
                 new Resume("uuid34"),
@@ -89,16 +90,29 @@ public abstract class AbstractArrayStorageTest {
         String uuid = "uuid777";
         assertThrows(NotExistStorageException.class, () -> storage.delete(uuid));
     }
-    
+
     @Test
     public void overflowStorage() {
+        assertEquals(4, storage.size());
         try {
-            for(int i = storage.size(); i < STORAGE_LIMIT; i++) {
+            for (int i = storage.size(); i < STORAGE_LIMIT; i++) {
                 storage.save(new Resume(String.format("uuid%d", i + 100)));
             }
-        } catch(StorageException e) {
+        } catch (StorageException e) {
             fail("Premature storage overflow");
         }
         assertThrows(StorageException.class, () -> storage.save(new Resume("uuid-1")));
+    }
+
+    @Test
+    public void updateExistingResume() {
+        Resume resumeToUpdate = new Resume("uuid34");
+        assertDoesNotThrow(() -> storage.update(resumeToUpdate));
+    }
+
+    @Test
+    public void updateNotExistingResume() {
+        Resume resumeToUpdate = new Resume("uuid6");
+        assertThrows(NotExistStorageException.class, () -> storage.update(resumeToUpdate));
     }
 }
