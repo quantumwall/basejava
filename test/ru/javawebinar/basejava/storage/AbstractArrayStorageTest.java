@@ -67,13 +67,8 @@ public abstract class AbstractArrayStorageTest {
     }
 
     private void assertGet(Resume expResult) {
-        Resume result;
-        try {
-            result = storage.get(expResult.getUuid());
-            assertEquals(expResult, result);
-        } catch (NotExistStorageException e) {
-            fail(String.format("Searched resume %s is not found\n", expResult));
-        }
+        Resume result = storage.get(expResult.getUuid());
+        assertEquals(expResult, result);
     }
 
     @Test
