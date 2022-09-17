@@ -44,15 +44,28 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         }
     }
 
+    protected abstract void insertResume(Resume r, int index);
+    
     @Override
-    protected Resume getResume(int index) {
+    public Resume getSearchKey(String uuid) {
+        int index = getIndex(uuid);
+        if(index < 0) {
+            return null;
+        }
         return storage[index];
     }
-
     @Override
-    protected void updateResume(Resume r, int index) {
-        storage[index] = r;
+    public boolean isExist(Object searchKey) {
+        
     }
 
-    protected abstract void insertResume(Resume r, int index);
+    public abstract void doSave(Object searchKey);
+
+    public abstract void doDelete(Object searchKey);
+
+    public abstract Resume doGet(Object searchKey);
+
+    public abstract void doUpdate(Object searchKey);
+    
+    protected abstract int getIndex(String uuid);
 }
