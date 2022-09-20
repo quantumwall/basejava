@@ -1,7 +1,6 @@
 package ru.javawebinar.basejava.storage;
 
 import java.util.Arrays;
-import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
@@ -31,41 +30,44 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public final void save(Resume r) {
-        int index = getIndex(r.getUuid());
+    public final void doSave(Resume resume, Object index) {
         if (size >= STORAGE_LIMIT) {
-            throw new StorageException("Storage overflow", r.getUuid());
-        } else if (index > -1) {
-            throw new ExistStorageException(r.getUuid());
+            throw new StorageException("Storage overflow", resume.getUuid());
         } else {
-            index = Math.abs(index + 1);
-            insertResume(r, index);
+            insertResume(resume, Math.abs((Integer) index + 1));
             size++;
         }
     }
 
+    @Override
+    public Resume doGet(Object index) {
+        return storage[(Integer) index];
+    }
+
+    @Override
+    public void doDelete(Object index) {
+        deleteResume((Integer) index);
+    }
+
+    @Override
+    public void doUpdate(Resume resume, Object index) {
+        storage[(Integer) index] = resume;
+    }
+
+    @Override
+    public Integer getSearchKey(String uuid) {
+        return getIndex(uuid);
+    }
+
+    @Override
+    public boolean isExist(Object index) {
+        return (Integer) index >= 0;
+    }
+
     protected abstract void insertResume(Resume r, int index);
-    
-    @Override
-    public Resume getSearchKey(String uuid) {
-        int index = getIndex(uuid);
-        if(index < 0) {
-            return null;
-        }
-        return storage[index];
-    }
-    @Override
-    public boolean isExist(Object searchKey) {
-        
-    }
 
-    public abstract void doSave(Object searchKey);
-
-    public abstract void doDelete(Object searchKey);
-
-    public abstract Resume doGet(Object searchKey);
-
-    public abstract void doUpdate(Object searchKey);
-    
     protected abstract int getIndex(String uuid);
+
+    protected abstract void deleteResume(int index);
+
 }

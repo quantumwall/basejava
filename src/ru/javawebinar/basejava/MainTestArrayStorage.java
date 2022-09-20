@@ -9,7 +9,7 @@ import ru.javawebinar.basejava.storage.Storage;
  */
 public class MainTestArrayStorage {
 
-    static final Storage ARRAY_STORAGE = new ArrayStorage();
+    static final Storage ARRAY_STORAGE = new MapStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume("uuid1");
@@ -23,10 +23,15 @@ public class MainTestArrayStorage {
         System.out.println("Get r1: " + ARRAY_STORAGE.get(r1.getUuid()));
         System.out.println("Size: " + ARRAY_STORAGE.size());
 
-        System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
-
-        System.out.println("Update uuid2");
-        ARRAY_STORAGE.update(new Resume("uuid2"));
+        //System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
+        {
+            System.out.println("Update uuid2");
+            Resume resumeToUpdate = new Resume("uuid2");
+            System.out.println("Before update " + (resumeToUpdate == ARRAY_STORAGE.get("uuid2")));
+            ARRAY_STORAGE.update(resumeToUpdate);
+            System.out.println("After update " + (resumeToUpdate == ARRAY_STORAGE.get("uuid2")));
+//            ARRAY_STORAGE.update(new Resume("uuid2"));
+        }
 
         printAll();
         ARRAY_STORAGE.delete(r1.getUuid());

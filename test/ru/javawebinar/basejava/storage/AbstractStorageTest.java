@@ -103,7 +103,8 @@ public abstract class AbstractStorageTest {
     public void update() {
         Resume resumeToUpdate = new Resume(UUID_1);
         assertDoesNotThrow(() -> storage.update(resumeToUpdate));
-        assertSame(resumeToUpdate, storage.get(UUID_1));
+        assertTrue(resumeToUpdate == storage.get(UUID_1));
+//        assertSame(resumeToUpdate, storage.get(UUID_1));
         assertSize(3);
     }
 

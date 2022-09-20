@@ -6,20 +6,20 @@ import ru.javawebinar.basejava.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    public void save(Resume r) {
-        doSave(findNotExistingResume(r.getUuid()));
+    public final void save(Resume r) {
+        doSave(r, findNotExistingResume(r.getUuid()));
     }
 
-    public void delete(String uuid) {
+    public final void delete(String uuid) {
         doDelete(findExistingResume(uuid));
     }
 
-    public Resume get(String uuid) {
+    public final Resume get(String uuid) {
         return doGet(findExistingResume(uuid));
     }
 
-    public void update(Resume r) {
-        doUpdate(findExistingResume(r.getUuid()));
+    public final void update(Resume r) {
+        doUpdate(r, findExistingResume(r.getUuid()));
     }
 
     private Object findExistingResume(String uuid) {
@@ -42,11 +42,11 @@ public abstract class AbstractStorage implements Storage {
 
     public abstract boolean isExist(Object searchKey);
 
-    public abstract void doSave(Object searchKey);
+    public abstract void doSave(Resume resume, Object searchKey);
 
     public abstract void doDelete(Object searchKey);
 
     public abstract Resume doGet(Object searchKey);
 
-    public abstract void doUpdate(Object searchKey);
+    public abstract void doUpdate(Resume resume, Object searchKey);
 }
