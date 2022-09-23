@@ -6,7 +6,7 @@ import ru.javawebinar.basejava.model.Resume;
 
 public class MapStorage extends AbstractStorage {
 
-    private Map<String, Resume> storage = new HashMap<>();
+    private final Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public Object getSearchKey(String uuid) {
@@ -15,7 +15,7 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     public boolean isExist(Object searchKey) {
-        return storage.get((String) searchKey) != null;
+        return storage.containsKey((String) searchKey);
     }
 
     @Override

@@ -55,18 +55,11 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public Integer getSearchKey(String uuid) {
-        return getIndex(uuid);
-    }
-
-    @Override
     public boolean isExist(Object index) {
         return (Integer) index >= 0;
     }
 
     protected abstract void insertResume(Resume r, int index);
-
-    protected abstract int getIndex(String uuid);
 
     protected abstract void deleteResume(int index);
 
