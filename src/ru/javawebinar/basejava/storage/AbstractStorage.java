@@ -1,10 +1,14 @@
 package ru.javawebinar.basejava.storage;
 
+import java.util.Comparator;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
+
+    protected Comparator<Resume> compareByNameAndUuid = Comparator.comparing(Resume::getFullName)
+            .thenComparing(Resume::getUuid);
 
     public final void save(Resume r) {
         doSave(r, findNotExistingResume(r.getUuid()));

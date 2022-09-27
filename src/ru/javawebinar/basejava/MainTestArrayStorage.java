@@ -9,12 +9,12 @@ import ru.javawebinar.basejava.storage.Storage;
  */
 public class MainTestArrayStorage {
 
-    static final Storage ARRAY_STORAGE = new MapStorage();
+    static final Storage ARRAY_STORAGE = new MapStorageByName();
 
     public static void main(String[] args) {
-        Resume r1 = new Resume("uuid1");
-        Resume r2 = new Resume("uuid2");
-        Resume r3 = new Resume("uuid3");
+        Resume r1 = new Resume("uuid1", "Catherin");
+        Resume r2 = new Resume("uuid2", "Annabel");
+        Resume r3 = new Resume("uuid3", "Bettany");
 
         ARRAY_STORAGE.save(r1);
         ARRAY_STORAGE.save(r2);
@@ -26,9 +26,11 @@ public class MainTestArrayStorage {
         //System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
         {
             System.out.println("Update uuid2");
-            Resume resumeToUpdate = new Resume("uuid2");
+            Resume resumeToUpdate = new Resume("uuid2", "Tiffany");
+//            System.out.println("Before update " + (resumeToUpdate == ARRAY_STORAGE.get("uuid2")));
             System.out.println("Before update " + (resumeToUpdate == ARRAY_STORAGE.get("uuid2")));
             ARRAY_STORAGE.update(resumeToUpdate);
+//            System.out.println("After update " + (resumeToUpdate == ARRAY_STORAGE.get("uuid2")));
             System.out.println("After update " + (resumeToUpdate == ARRAY_STORAGE.get("uuid2")));
 //            ARRAY_STORAGE.update(new Resume("uuid2"));
         }
@@ -44,7 +46,7 @@ public class MainTestArrayStorage {
 
     static void printAll() {
         System.out.println("\nGet All");
-        for (Resume r : ARRAY_STORAGE.getAll()) {
+        for (Resume r : ARRAY_STORAGE.getAllSorted()) {
             System.out.println(r);
         }
     }

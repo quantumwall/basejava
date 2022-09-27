@@ -1,42 +1,14 @@
 package ru.javawebinar.basejava.storage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import ru.javawebinar.basejava.model.Resume;
 
-public class MapStorage extends AbstractStorage {
+public abstract class MapStorage extends AbstractStorage {
 
-    private final Map<String, Resume> storage = new HashMap<>();
-
-    @Override
-    public Object getSearchKey(String uuid) {
-        return uuid;
-    }
-
-    @Override
-    public boolean isExist(Object searchKey) {
-        return storage.containsKey((String) searchKey);
-    }
-
-    @Override
-    public void doSave(Resume resume, Object searchKey) {
-        storage.put((String) searchKey, resume);
-    }
-
-    @Override
-    public void doDelete(Object searchKey) {
-        storage.remove((String) searchKey);
-    }
-
-    @Override
-    public Resume doGet(Object searchKey) {
-        return storage.get((String) searchKey);
-    }
-
-    @Override
-    public void doUpdate(Resume resume, Object searchKey) {
-        storage.put((String) searchKey, resume);
-    }
+    protected final Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public void clear() {
@@ -44,8 +16,10 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.values().toArray(Resume[]::new);
+    public List<Resume> getAllSorted() {
+        List<Resume> result = getAll();
+        result.sort(compareByNameAndUuid);
+        return result;
     }
 
     @Override
@@ -53,4 +27,11 @@ public class MapStorage extends AbstractStorage {
         return storage.size();
     }
 
+    private List<Resume> getAll() {
+        ArrayList<Resume> result = new ArrayList<>();
+        for (Map.Entry<String, Resume> pair : storage.entrySet()) {
+            result.add(pair.getValue());
+        }
+        return result;
+    }
 }
