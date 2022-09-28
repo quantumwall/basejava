@@ -2,7 +2,7 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.Resume;
 
-public class MapStorageByUuid extends MapStorage {
+public class MapUuidStorage extends AbstractMapStorage {
 
     @Override
     public Resume doGet(Object uuid) {

@@ -9,7 +9,7 @@ import ru.javawebinar.basejava.storage.Storage;
  */
 public class MainTestArrayStorage {
 
-    static final Storage ARRAY_STORAGE = new MapStorageByName();
+    static final Storage ARRAY_STORAGE = new MapResumeStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume("uuid1", "Catherin");

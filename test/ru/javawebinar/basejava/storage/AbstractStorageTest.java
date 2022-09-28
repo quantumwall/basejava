@@ -57,7 +57,7 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() {
+    public void getAllSorted() {
         assertSize(3);
         List<Resume> expResult = new ArrayList<>();
         expResult.add(RESUME_1);
