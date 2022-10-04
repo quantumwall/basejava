@@ -7,9 +7,9 @@ public class Period {
 
     private String title;
     private String description;
-    private LocalDate entryDate;
-    private LocalDate exitDate;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
+    private final LocalDate entryDate;
+    private final LocalDate exitDate;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
 
     public Period(LocalDate entryDate, LocalDate exitDate) {
         this.entryDate = entryDate;

@@ -1,10 +1,5 @@
 package ru.javawebinar.basejava.model;
 
-import static ru.javawebinar.basejava.model.SectionType.OBJECTIVE;
-import static ru.javawebinar.basejava.model.SectionType.QUALIFICATIONS;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -103,56 +98,6 @@ public class Resume implements Comparable<Resume> {
     private void displaySections() {
         for (SectionType type : SectionType.values()) {
             sections.get(type).display();
-//            switch (type) {
-//                case PERSONAL, OBJECTIVE ->
-//                    displayTextSection(sections.get(type));
-//                case ACHIEVEMENTS, QUALIFICATIONS ->
-//                    displayListSection(sections.get(type));
-//                default ->
-//                    displayCompanySection(sections.get(type));
-//            }
         }
     }
-
-    private void displayTextSection(AbstractSection section) {
-        TextSection textSection = (TextSection) section;
-        System.out.println(textSection.getType().getTitle());
-        System.out.println(textSection.getText());
-    }
-
-    private void displayListSection(AbstractSection section) {
-        ListSection listSection = (ListSection) section;
-        System.out.println(listSection.getType().getTitle());
-        for (String item : listSection.getItems()) {
-            System.out.println(item);
-        }
-    }
-
-    private void displayCompanySection(AbstractSection section) {
-        var dateFormatter = DateTimeFormatter.ofPattern("MM/yyyy");
-        CompanySection companySection = (CompanySection) section;
-        System.out.println(companySection.getType().getTitle());
-        for (Company company : companySection.getCompanies()) {
-            System.out.printf("%s ", company.getName());
-            System.out.println(company.getWebsite());
-            for (Period period : company.getPeriods()) {
-                String entryDate = getFormattedDate(period.getEntryDate(), dateFormatter);
-                String exitDate = getFormattedDate(period.getExitDate(), dateFormatter);
-                System.out.printf("%s - %s\n", entryDate, exitDate);
-                System.out.println(period.getTitle());
-                System.out.println(period.getDescription());
-            }
-        }
-    }
-
-    private String getFormattedDate(LocalDate date, DateTimeFormatter formatter) {
-        if (date == null) {
-            return "настоящее время";
-        }
-        if (formatter == null) {
-            return date.toString();
-        }
-        return date.format(formatter);
-    }
-
 }
