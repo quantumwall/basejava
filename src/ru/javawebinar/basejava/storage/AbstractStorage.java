@@ -2,32 +2,39 @@ package ru.javawebinar.basejava.storage;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
-public abstract class AbstractStorage implements Storage {
+public abstract class AbstractStorage<SK> implements Storage {
 
     protected Comparator<Resume> compareByNameAndUuid = Comparator.comparing(Resume::getFullName)
             .thenComparing(Resume::getUuid);
 
+    private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
+
     @Override
     public final void save(Resume r) {
+        LOG.info("Save " + r);
         doSave(r, findNotExistingResume(r.getUuid()));
     }
 
     @Override
     public final void delete(String uuid) {
+        LOG.info("Delete " + uuid);
         doDelete(findExistingResume(uuid));
     }
 
     @Override
     public final Resume get(String uuid) {
+        LOG.info("Get " + uuid);
         return doGet(findExistingResume(uuid));
     }
 
     @Override
     public final void update(Resume r) {
+        LOG.info("Update " + r);
         doUpdate(r, findExistingResume(r.getUuid()));
     }
 
@@ -38,33 +45,35 @@ public abstract class AbstractStorage implements Storage {
         return result;
     }
 
-    private Object findExistingResume(String uuid) {
-        Object result = getSearchKey(uuid);
+    private SK findExistingResume(String uuid) {
+        SK result = getSearchKey(uuid);
         if (!isExist(result)) {
+            LOG.warning("Resume " + uuid + " is not exist");
             throw new NotExistStorageException(uuid);
         }
         return result;
     }
 
-    private Object findNotExistingResume(String uuid) {
-        Object result = getSearchKey(uuid);
+    private SK findNotExistingResume(String uuid) {
+        SK result = getSearchKey(uuid);
         if (isExist(result)) {
+            LOG.warning("Resume " + uuid + " already exist");
             throw new ExistStorageException(uuid);
         }
         return result;
     }
 
-    public abstract Object getSearchKey(String uuid);
+    public abstract SK getSearchKey(String uuid);
 
-    public abstract boolean isExist(Object searchKey);
+    public abstract boolean isExist(SK searchKey);
 
-    public abstract void doSave(Resume resume, Object searchKey);
+    public abstract void doSave(Resume resume, SK searchKey);
 
-    public abstract void doDelete(Object searchKey);
+    public abstract void doDelete(SK searchKey);
 
-    public abstract Resume doGet(Object searchKey);
+    public abstract Resume doGet(SK searchKey);
 
-    public abstract void doUpdate(Resume resume, Object searchKey);
-    
+    public abstract void doUpdate(Resume resume, SK searchKey);
+
     public abstract List<Resume> doCopyAll();
 }
