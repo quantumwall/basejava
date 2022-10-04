@@ -12,17 +12,17 @@ public class MapResumeStorage extends AbstractStorage<Resume> {
 
     @Override
     public Resume doGet(Resume searchKey) {
-        return (Resume) searchKey;
+        return searchKey;
     }
 
     @Override
     public boolean isExist(Resume searchKey) {
-        return searchKey == null ? false : storage.containsKey(((Resume) searchKey).getUuid());
+        return searchKey == null ? false : storage.containsKey(searchKey.getUuid());
     }
 
     @Override
     public void doDelete(Resume searchKey) {
-        storage.remove(((Resume) searchKey).getUuid());
+        storage.remove(searchKey.getUuid());
     }
 
     @Override

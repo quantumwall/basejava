@@ -12,17 +12,17 @@ public class MapUuidStorage extends AbstractStorage<String> {
 
     @Override
     public Resume doGet(String uuid) {
-        return storage.get((String) uuid);
+        return storage.get(uuid);
     }
 
     @Override
     public boolean isExist(String uuid) {
-        return storage.containsKey((String) uuid);
+        return storage.containsKey(uuid);
     }
 
     @Override
     public void doDelete(String searchKey) {
-        storage.remove((String) searchKey);
+        storage.remove(searchKey);
     }
 
     @Override
@@ -32,12 +32,12 @@ public class MapUuidStorage extends AbstractStorage<String> {
 
     @Override
     public void doSave(Resume resume, String searchKey) {
-        storage.put((String) searchKey, resume);
+        storage.put(searchKey, resume);
     }
 
     @Override
     public void doUpdate(Resume resume, String searchKey) {
-        storage.put((String) searchKey, resume);
+        storage.put(searchKey, resume);
     }
 
     @Override
