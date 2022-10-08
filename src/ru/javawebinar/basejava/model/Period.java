@@ -1,7 +1,7 @@
 package ru.javawebinar.basejava.model;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class Period {
 
@@ -9,9 +9,12 @@ public class Period {
     private String description;
     private final LocalDate entryDate;
     private final LocalDate exitDate;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
 
-    public Period(LocalDate entryDate, LocalDate exitDate) {
+    public Period(String title, String description, LocalDate entryDate, LocalDate exitDate) {
+        Objects.requireNonNull(title, "title must be non null");
+        Objects.requireNonNull(entryDate, "entryDate must be non null");
+        this.title = title;
+        this.description = description;
         this.entryDate = entryDate;
         this.exitDate = exitDate;
     }
@@ -40,19 +43,58 @@ public class Period {
         this.description = description;
     }
 
-    public void display() {
-        System.out.printf("%s - %s\n", getFormattedDate(entryDate, formatter), getFormattedDate(exitDate, formatter));
-        System.out.println(title);
-        System.out.println(description);
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.title);
+        hash = 97 * hash + Objects.hashCode(this.description);
+        hash = 97 * hash + Objects.hashCode(this.entryDate);
+        hash = 97 * hash + Objects.hashCode(this.exitDate);
+        return hash;
     }
 
-    private String getFormattedDate(LocalDate date, DateTimeFormatter formatter) {
-        if (date == null) {
-            return "настоящее время";
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
-        if (formatter == null) {
-            return date.toString();
+        if (obj == null) {
+            return false;
         }
-        return date.format(formatter);
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Period other = (Period) obj;
+        if (!Objects.equals(this.title, other.title)) {
+            return false;
+        }
+        if (!Objects.equals(this.description, other.description)) {
+            return false;
+        }
+        if (!Objects.equals(this.entryDate, other.entryDate)) {
+            return false;
+        }
+        return Objects.equals(this.exitDate, other.exitDate);
     }
+
+    @Override
+    public String toString() {
+        return "Period{" + "title=" + title + ", description=" + description + ", entryDate=" + entryDate + ", exitDate=" + exitDate + '}';
+    }
+
+//    public void display() {
+//        System.out.printf("%s - %s\n", getFormattedDate(entryDate, formatter), getFormattedDate(exitDate, formatter));
+//        System.out.println(title);
+//        System.out.println(description);
+//    }
+//
+//    private String getFormattedDate(LocalDate date, DateTimeFormatter formatter) {
+//        if (date == null) {
+//            return "настоящее время";
+//        }
+//        if (formatter == null) {
+//            return date.toString();
+//        }
+//        return date.format(formatter);
+//    }
 }

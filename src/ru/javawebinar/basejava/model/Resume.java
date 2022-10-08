@@ -1,6 +1,6 @@
 package ru.javawebinar.basejava.model;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -8,8 +8,8 @@ public class Resume implements Comparable<Resume> {
 
     private final String uuid;
     private String fullName;
-    private Map<ContactType, String> contacts = new HashMap<>();
-    private Map<SectionType, AbstractSection> sections = new HashMap<>();
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -50,7 +50,7 @@ public class Resume implements Comparable<Resume> {
 
     @Override
     public String toString() {
-        return String.format("%s %s\n", uuid, fullName);
+        return "Resume{" + "uuid=" + uuid + ", fullName=" + fullName + '}';
     }
 
     @Override
@@ -78,26 +78,26 @@ public class Resume implements Comparable<Resume> {
         return uuid.compareTo(r.getUuid());
     }
 
-    public void display() {
-        displayName();
-        displayContacts();
-        displaySections();
-    }
-
-    private void displayName() {
-        System.out.println(fullName);
-    }
-
-    private void displayContacts() {
-        for (ContactType type : ContactType.values()) {
-            System.out.printf("%s ", type.getTitle());
-            System.out.println(contacts.get(type));
-        }
-    }
-
-    private void displaySections() {
-        for (SectionType type : SectionType.values()) {
-            sections.get(type).display();
-        }
-    }
+//    public void display() {
+//        displayName();
+//        displayContacts();
+//        displaySections();
+//    }
+//
+//    private void displayName() {
+//        System.out.println(fullName);
+//    }
+//
+//    private void displayContacts() {
+//        for (ContactType type : ContactType.values()) {
+//            System.out.printf("%s ", type.getTitle());
+//            System.out.println(contacts.get(type));
+//        }
+//    }
+//
+//    private void displaySections() {
+//        for (SectionType type : SectionType.values()) {
+//            sections.get(type).display();
+//        }
+//    }
 }

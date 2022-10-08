@@ -2,31 +2,22 @@ package ru.javawebinar.basejava.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Company {
 
-    private String name;
-    private String website;
-    private List<Period> periods = new ArrayList<>();
+    private final Link link;
+    private final List<Period> periods;
 
-    public Company(String name) {
-        this.name = name;
+    public Company(Link link, List<Period> periods) {
+        Objects.requireNonNull(link, "link must be non null");
+        Objects.requireNonNull(periods, "periods must be non null");
+        this.link = link;
+        this.periods = new ArrayList<>(periods);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
+    public Link getLink() {
+        return link;
     }
 
     public void addPeriod(Period period) {
@@ -39,11 +30,35 @@ public class Company {
         return new ArrayList<>(periods);
     }
 
-    public void display() {
-        System.out.printf("%s ", name);
-        System.out.println(website);
-        for (Period period : periods) {
-            period.display();
-        }
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + Objects.hashCode(this.link);
+        hash = 59 * hash + Objects.hashCode(this.periods);
+        return hash;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Company other = (Company) obj;
+        if (!Objects.equals(this.link, other.link)) {
+            return false;
+        }
+        return Objects.equals(this.periods, other.periods);
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" + "link=" + link + ", periods=" + periods + '}';
+    }
+
 }

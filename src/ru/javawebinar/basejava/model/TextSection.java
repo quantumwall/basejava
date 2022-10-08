@@ -1,16 +1,13 @@
 package ru.javawebinar.basejava.model;
 
+import java.util.Objects;
+
 public class TextSection extends AbstractSection {
 
-    private SectionType type;
     private String text;
 
-    public TextSection(SectionType type) {
-        this.type = type;
-    }
-
-    public TextSection(SectionType type, String text) {
-        this.type = type;
+    public TextSection(String text) {
+        Objects.requireNonNull(text, "text must be non null");
         this.text = text;
     }
 
@@ -18,18 +15,31 @@ public class TextSection extends AbstractSection {
         return text;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public SectionType getType() {
-        return type;
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + Objects.hashCode(this.text);
+        return hash;
     }
 
     @Override
-    public void display() {
-        System.out.println(type.getTitle());
-        System.out.println(text);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TextSection other = (TextSection) obj;
+        return Objects.equals(this.text, other.text);
+    }
+
+    @Override
+    public String toString() {
+        return text;
     }
 
 }
