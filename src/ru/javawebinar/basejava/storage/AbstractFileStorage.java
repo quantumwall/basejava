@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
-    private File directory;
+    private final File directory;
 
     protected AbstractFileStorage(File directory) {
         Objects.requireNonNull(directory, "file must be non null");
@@ -39,26 +40,27 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             file.createNewFile();
             doWrite(resume, file);
         } catch (IOException e) {
-            LOG.warning("IOException saving " + resume + " to " + file.getName());
+            LOG.log(Level.WARNING, "IOException saving {0} to {1}", new Object[]{resume, file.getName()});
             throw new StorageException("IO Exception", file.getName(), e);
         }
     }
 
     @Override
     public void doDelete(File file) {
-        file.delete();
+        if (!file.delete()) {
+            LOG.log(Level.WARNING, "IO Exception deleting file {0}", file.getName());
+            throw new StorageException("IO Exception", file.getName());
+        }
     }
 
     @Override
     public Resume doGet(File file) {
-        Resume result = null;
         try {
-            result = doRead(file);
+            return doRead(file);
         } catch (IOException e) {
-            LOG.warning("IOException reading  from " + file.getName());
+            LOG.log(Level.WARNING, "IOException reading  from {0}", file.getName());
             throw new StorageException("IO Exception", file.getName(), e);
         }
-        return result;
     }
 
     @Override
@@ -66,7 +68,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             doWrite(resume, file);
         } catch (IOException e) {
-            LOG.warning("IOException saving " + resume + " to " + file.getName());
+            LOG.log(Level.WARNING, "IOException saving {0} to {1}", new Object[]{resume, file.getName()});
             throw new StorageException("IO Exception", file.getName(), e);
         }
     }
@@ -74,12 +76,12 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     public List<Resume> doCopyAll() {
         List<Resume> result = new ArrayList<>();
-        for (File file : directory.listFiles()) {
+        for (File file : getListFiles()) {
             if (!file.isDirectory()) {
                 try {
                     result.add(doRead(file));
                 } catch (IOException e) {
-                    LOG.warning("IOException reading  from " + file.getName());
+                    LOG.log(Level.WARNING, "IOException reading  from {0}", file.getName());
                     throw new StorageException("IO Exception", file.getName(), e);
                 }
             }
@@ -89,14 +91,23 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        for (File file : directory.listFiles()) {
+        for (File file : getListFiles()) {
             file.delete();
         }
     }
 
     @Override
     public int size() {
-        return directory.list().length;
+        return getListFiles().length;
+    }
+
+    private File[] getListFiles() {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            LOG.log(Level.WARNING, "IO Exception reading directory {0}", directory.getAbsolutePath());
+            throw new StorageException("Error reading directory", directory.getAbsolutePath());
+        }
+        return files;
     }
 
     protected abstract void doWrite(Resume resume, File file) throws IOException;
