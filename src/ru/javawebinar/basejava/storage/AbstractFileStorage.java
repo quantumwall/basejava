@@ -78,12 +78,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         List<Resume> result = new ArrayList<>();
         for (File file : getListFiles()) {
             if (!file.isDirectory()) {
-                try {
-                    result.add(doRead(file));
-                } catch (IOException e) {
-                    LOG.log(Level.WARNING, "IOException reading  from {0}", file.getName());
-                    throw new StorageException("IO Exception", file.getName(), e);
-                }
+                result.add(doGet(file));
             }
         }
         return result;
