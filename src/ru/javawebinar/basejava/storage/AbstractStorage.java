@@ -13,7 +13,11 @@ public abstract class AbstractStorage<SK> implements Storage {
             .thenComparing(Resume::getUuid);
 
     protected static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
+//    private Serialization serializator;
 
+//    public void setSerializator(Serialization s) {
+//        serializator = s;
+//    }
     @Override
     public final void save(Resume r) {
         LOG.info("Save " + r);

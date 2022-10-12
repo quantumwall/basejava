@@ -9,10 +9,10 @@ public class ResumeTestData {
     public static void main(String[] args) {
         var resume = getResume("uuid1", "Григорий Кислин");
         System.out.println(resume);
-        for(ContactType type : ContactType.values()) {
+        for (ContactType type : ContactType.values()) {
             System.out.printf("%s: %s\n", type.getTitle(), resume.getContact(type));
         }
-        for(SectionType type : SectionType.values()) {
+        for (SectionType type : SectionType.values()) {
             System.out.printf("%s: %s\n", type.getTitle(), resume.getSection(type));
         }
     }
