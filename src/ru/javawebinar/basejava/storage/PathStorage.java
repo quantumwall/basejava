@@ -1,9 +1,7 @@
 package ru.javawebinar.basejava.storage;
 
 import java.io.*;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,18 +9,18 @@ import java.util.Objects;
 import java.util.logging.Level;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
-
+import java.nio.file.NotDirectoryException;
+import java.util.stream.Stream;
 import static ru.javawebinar.basejava.storage.AbstractStorage.LOG;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractStorage<Path> {
 
     protected final Path directory;
-    private Serialization serializer;
+    protected Serializer serializer;
 
-    public AbstractPathStorage(String dir, Serialization s) {
+    public PathStorage(String dir) {
         Objects.requireNonNull(dir, "directory must be non null");
-        Objects.requireNonNull(s, "serialization type must be non null");
-        serializer = s;
+        serializer = new ObjectStreamSerializer();
         directory = Path.of(dir);
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             LOG.log(Level.WARNING, "{0} is not directory or is not writable", directory);
@@ -30,43 +28,26 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         }
     }
 
-    public void setSerializer(Serialization serializator) {
-        this.serializer = serializator;
-    }
-
-    public Serialization getSerializer() {
-        return serializer;
-    }
-
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(this::doDelete);
-        } catch (IOException e) {
-            LOG.log(Level.WARNING, "Path delete error");
-            throw new StorageException("Path delete error", null, e);
-        }
+        getStreamPaths(directory).forEach(this::doDelete);
     }
 
     @Override
     public int size() {
-        try {
-            return (int) Files.list(directory).count();
-        } catch (IOException e) {
-            LOG.log(Level.WARNING, "Read directory error {0}", directory);
-            throw new StorageException("Read directory error", directory.toString(), e);
-        }
+        return (int) getStreamPaths(directory).count();
+    }
+
+    @Override
+    public List<Resume> doCopyAll() {
+        List<Resume> result = new ArrayList<>();
+        getStreamPaths(directory).forEach(e -> result.add(doGet(e)));
+        return result;
     }
 
     @Override
     public Path getSearchKey(String uuid) {
-        try {
-            return FileSystems.getDefault().getPath(directory.toString(), uuid);
-        } catch (InvalidPathException e) {
-            LOG.log(Level.WARNING, "Get path error {0}", uuid);
-            throw new StorageException("Get file error", uuid, e);
-        }
-
+        return directory.resolve(uuid);
     }
 
     @Override
@@ -109,20 +90,29 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         }
     }
 
-    @Override
-    public List<Resume> doCopyAll() {
-        List<Resume> result = new ArrayList<>();
+    private Stream<Path> getStreamPaths(Path directory) {
         try {
-            Files.list(directory).forEach(e -> result.add(doGet(e)));
+            return Files.list(directory);
+        } catch (NotDirectoryException e) {
+            LOG.log(Level.WARNING, "Error obtaining list files: {0} is not directory", directory);
+            throw new StorageException("Error obtaining list files: is not directory", directory.toString(), e);
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Error obtaining list files {0}", directory);
             throw new StorageException("Error obtaining list files", null, e);
         }
-        return result;
     }
 
-    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
+    private void doWrite(Resume r, OutputStream os) throws IOException {
+        serializer.serialize(r, os);
+    }
 
-    protected abstract Resume doRead(InputStream is) throws IOException;
+    private Resume doRead(InputStream is) throws IOException {
+        try {
+            return serializer.unserialize(is);
+        } catch (ClassNotFoundException e) {
+            LOG.log(Level.WARNING, "Error read resume");
+            throw new StorageException("Error read resume", null, e);
+        }
+    }
 
 }

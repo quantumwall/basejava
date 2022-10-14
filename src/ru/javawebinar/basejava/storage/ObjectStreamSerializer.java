@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import ru.javawebinar.basejava.model.Resume;
 
-public class ObjectStreamSerializer implements Serialization {
+public class ObjectStreamSerializer implements Serializer {
 
     @Override
     public void serialize(Serializable obj, OutputStream out) throws IOException {

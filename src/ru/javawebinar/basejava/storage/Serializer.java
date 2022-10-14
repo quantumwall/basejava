@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import ru.javawebinar.basejava.model.Resume;
 
-public interface Serialization {
+public interface Serializer {
 
     void serialize(Serializable obj, OutputStream to) throws IOException;
 
