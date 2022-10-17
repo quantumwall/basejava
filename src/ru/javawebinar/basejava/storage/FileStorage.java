@@ -1,5 +1,7 @@
 package ru.javawebinar.basejava.storage;
 
+import ru.javawebinar.basejava.storage.serialization.ObjectStreamSerializer;
+import ru.javawebinar.basejava.storage.serialization.Serializer;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -9,7 +11,7 @@ import ru.javawebinar.basejava.model.Resume;
 public class FileStorage extends AbstractStorage<File> {
 
     private final File directory;
-    private Serializer serializer;
+    private final Serializer serializer;
 
     protected FileStorage(String directory) {
         Objects.requireNonNull(directory, "file must be non null");
@@ -36,20 +38,20 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void doSave(Resume resume, File file) {
-//        try {
-//            file.createNewFile();
-//        } catch (IOException e) {
-//            LOG.log(Level.WARNING, "IOException saving {0} to {1}", new Object[]{resume, file.getName()});
-//            throw new StorageException("IO Exception", file.getName(), e);
-//        }
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "File create error {}", file);
+            throw new StorageException("File create error", file.getName(), e);
+        }
         doUpdate(resume, file);
     }
 
     @Override
     public void doDelete(File file) {
         if (!file.delete()) {
-            LOG.log(Level.WARNING, "IO Exception deleting file {0}", file.getName());
-            throw new StorageException("IO Exception", file.getName());
+            LOG.log(Level.WARNING, "File delete error {0}", file);
+            throw new StorageException("File delete error", file.getName());
         }
     }
 
@@ -58,8 +60,8 @@ public class FileStorage extends AbstractStorage<File> {
         try {
             return doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "IOException reading  from {0}", file.getName());
-            throw new StorageException("IO Exception", file.getName(), e);
+            LOG.log(Level.WARNING, "File read error {0}", file);
+            throw new StorageException("File read error", file.getName(), e);
         }
     }
 
@@ -68,8 +70,8 @@ public class FileStorage extends AbstractStorage<File> {
         try {
             doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
-            LOG.log(Level.WARNING, "IOException saving {0} to {1}", new Object[]{resume, file.getName()});
-            throw new StorageException("IO Exception", file.getName(), e);
+            LOG.log(Level.WARNING, "File write error {0}", file);
+            throw new StorageException("File write error", file.getName(), e);
         }
     }
 
@@ -99,7 +101,7 @@ public class FileStorage extends AbstractStorage<File> {
     private File[] getListFiles() {
         File[] files = directory.listFiles();
         if (files == null) {
-            LOG.log(Level.WARNING, "IO Exception reading directory {0}", directory.getAbsolutePath());
+            LOG.log(Level.WARNING, "Directory read error", directory);
             throw new StorageException("Error reading directory", directory.getAbsolutePath());
         }
         return files;

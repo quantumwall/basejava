@@ -1,22 +1,23 @@
 package ru.javawebinar.basejava.storage;
 
+import ru.javawebinar.basejava.storage.serialization.ObjectStreamSerializer;
+import ru.javawebinar.basejava.storage.serialization.Serializer;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.NotDirectoryException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
-import java.nio.file.NotDirectoryException;
-import java.util.stream.Stream;
-import static ru.javawebinar.basejava.storage.AbstractStorage.LOG;
 
 public class PathStorage extends AbstractStorage<Path> {
 
     protected final Path directory;
-    protected Serializer serializer;
+    protected final Serializer serializer;
 
     public PathStorage(String dir) {
         Objects.requireNonNull(dir, "directory must be non null");
@@ -67,6 +68,12 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public void doSave(Resume r, Path path) {
+        try {
+            Files.createFile(path);
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Path create error {0}", path);
+            throw new StorageException("Path create error", path.toString(), e);
+        }
         doUpdate(r, path);
     }
 

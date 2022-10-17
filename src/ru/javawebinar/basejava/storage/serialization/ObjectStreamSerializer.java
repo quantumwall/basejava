@@ -1,4 +1,4 @@
-package ru.javawebinar.basejava.storage;
+package ru.javawebinar.basejava.storage.serialization;
 
 import java.io.IOException;
 import java.io.InputStream;
