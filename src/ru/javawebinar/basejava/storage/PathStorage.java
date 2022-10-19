@@ -1,6 +1,5 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.storage.serialization.ObjectStreamSerializer;
 import ru.javawebinar.basejava.storage.serialization.Serializer;
 import java.io.*;
 import java.nio.file.Files;
@@ -19,9 +18,9 @@ public class PathStorage extends AbstractStorage<Path> {
     protected final Path directory;
     protected final Serializer serializer;
 
-    public PathStorage(String dir) {
+    public PathStorage(String dir, Serializer s) {
         Objects.requireNonNull(dir, "directory must be non null");
-        serializer = new ObjectStreamSerializer();
+        serializer = s;
         directory = Path.of(dir);
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             LOG.log(Level.WARNING, "{0} is not directory or is not writable", directory);

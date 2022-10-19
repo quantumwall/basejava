@@ -3,15 +3,25 @@ package ru.javawebinar.basejava.model;
 import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Comparable<Resume>, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final String uuid;
+    private String uuid;
     private String fullName;
     private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
     private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
+
+    public Resume() {
+
+    }
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -41,6 +51,10 @@ public class Resume implements Comparable<Resume>, Serializable {
     public String getContact(ContactType type) {
         return contacts.get(type);
     }
+    
+    public Map<ContactType, String> getContacts() {
+        return contacts;
+    }
 
     public void addSection(SectionType type, AbstractSection section) {
         sections.put(type, section);
@@ -48,6 +62,10 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     public AbstractSection getSection(SectionType type) {
         return sections.get(type);
+    }
+    
+    public Map<SectionType, AbstractSection> getSections() {
+        return sections;
     }
 
     @Override
@@ -57,7 +75,12 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        int hash = 5;
+        hash = 79 * hash + Objects.hashCode(this.uuid);
+        hash = 79 * hash + Objects.hashCode(this.fullName);
+        hash = 79 * hash + Objects.hashCode(this.contacts);
+        hash = 79 * hash + Objects.hashCode(this.sections);
+        return hash;
     }
 
     @Override
@@ -72,34 +95,20 @@ public class Resume implements Comparable<Resume>, Serializable {
             return false;
         }
         final Resume other = (Resume) obj;
-        return uuid.equals(other.uuid);
+        if (!Objects.equals(this.uuid, other.uuid)) {
+            return false;
+        }
+        if (!Objects.equals(this.fullName, other.fullName)) {
+            return false;
+        }
+        if (!Objects.equals(this.contacts, other.contacts)) {
+            return false;
+        }
+        return Objects.equals(this.sections, other.sections);
     }
 
     @Override
     public int compareTo(final Resume r) {
         return uuid.compareTo(r.getUuid());
     }
-
-//    public void display() {
-//        displayName();
-//        displayContacts();
-//        displaySections();
-//    }
-//
-//    private void displayName() {
-//        System.out.println(fullName);
-//    }
-//
-//    private void displayContacts() {
-//        for (ContactType type : ContactType.values()) {
-//            System.out.printf("%s ", type.getTitle());
-//            System.out.println(contacts.get(type));
-//        }
-//    }
-//
-//    private void displaySections() {
-//        for (SectionType type : SectionType.values()) {
-//            sections.get(type).display();
-//        }
-//    }
 }

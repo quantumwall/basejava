@@ -3,14 +3,26 @@ package ru.javawebinar.basejava.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import ru.javawebinar.basejava.util.DateUtil;
+import ru.javawebinar.basejava.util.XmlLocalDateAdapter;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Period implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String title;
     private String description;
-    private final LocalDate entryDate;
-    private final LocalDate exitDate;
+    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
+    private LocalDate entryDate;
+    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
+    private LocalDate exitDate;
+    
+    public Period() {
+        
+    }
 
     public Period(String title, String description, LocalDate entryDate, LocalDate exitDate) {
         Objects.requireNonNull(title, "title must be non null");
@@ -18,7 +30,7 @@ public class Period implements Serializable {
         this.title = title;
         this.description = description;
         this.entryDate = entryDate;
-        this.exitDate = exitDate;
+        this.exitDate = Objects.requireNonNullElse(exitDate, DateUtil.NOW);
     }
 
     public LocalDate getEntryDate() {

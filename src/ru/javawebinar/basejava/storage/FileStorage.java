@@ -1,6 +1,5 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.storage.serialization.ObjectStreamSerializer;
 import ru.javawebinar.basejava.storage.serialization.Serializer;
 import java.io.*;
 import java.util.*;
@@ -13,8 +12,9 @@ public class FileStorage extends AbstractStorage<File> {
     private final File directory;
     private final Serializer serializer;
 
-    protected FileStorage(String directory) {
+    protected FileStorage(String directory, Serializer s) {
         Objects.requireNonNull(directory, "file must be non null");
+        serializer = s;
         File dir = new File(directory);
         if (!dir.isDirectory()) {
             throw new IllegalArgumentException(dir.getAbsolutePath() + " must be directory");
@@ -23,7 +23,6 @@ public class FileStorage extends AbstractStorage<File> {
             throw new IllegalArgumentException(dir.getAbsolutePath() + " is not readable/writable");
         }
         this.directory = dir;
-        serializer = new ObjectStreamSerializer();
     }
 
     @Override

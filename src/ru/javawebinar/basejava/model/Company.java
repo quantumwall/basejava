@@ -4,12 +4,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Company implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final Link link;
-    private final List<Period> periods;
+    private Link link;
+    private List<Period> periods;
+
+    public Company() {
+
+    }
 
     public Company(Link link, List<Period> periods) {
         Objects.requireNonNull(link, "link must be non null");
