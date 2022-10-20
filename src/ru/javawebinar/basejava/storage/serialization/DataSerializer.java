@@ -52,7 +52,7 @@ public class DataSerializer implements Serializer {
 
     private void writeContacts(Map<ContactType, String> contacts, DataOutputStream dos) throws IOException {
         dos.writeInt(contacts.size());
-        writeWithException(contacts.entrySet(), dos, (Consumer<Map.Entry<ContactType, String>>) (Map.Entry<ContactType, String> entry) -> {
+        writeWithException(contacts.entrySet(), dos, entry -> {
             dos.writeUTF(entry.getKey().name());
             dos.writeUTF(entry.getValue());
         });
@@ -82,13 +82,13 @@ public class DataSerializer implements Serializer {
     private void writeListSection(AbstractSection section, DataOutputStream dos) throws IOException {
         List<String> items = ((ListSection) section).getItems();
         dos.writeInt(items.size());
-        writeWithException(items, dos, s -> dos.writeUTF((String) s));
+        writeWithException(items, dos, s -> dos.writeUTF(s));
     }
 
     private void writeCompanySection(AbstractSection section, DataOutputStream dos) throws IOException {
         List<Company> companies = ((CompanySection) section).getCompanies();
         dos.writeInt(companies.size());
-        writeWithException(companies, dos, c -> writeCompany((Company) c, dos));
+        writeWithException(companies, dos, c -> writeCompany(c, dos));
     }
 
     private void writeCompany(Company company, DataOutputStream dos) throws IOException {
@@ -96,7 +96,7 @@ public class DataSerializer implements Serializer {
         dos.writeUTF(Objects.requireNonNullElse(company.getLink().getUrl(), ""));
         List<Period> periods = company.getPeriods();
         dos.writeInt(periods.size());
-        writeWithException(periods, dos, p -> writePeriod((Period) p, dos));
+        writeWithException(periods, dos, p -> writePeriod(p, dos));
     }
 
     private void writePeriod(Period period, DataOutputStream dos) throws IOException {
@@ -106,7 +106,7 @@ public class DataSerializer implements Serializer {
         dos.writeUTF(period.getExitDate().format(FORMATTER));
     }
 
-    private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, Consumer consumer) throws IOException {
+    private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, Consumer<T> consumer) throws IOException {
         Objects.requireNonNull(collection, "Collection must be non null");
         Objects.requireNonNull(dos, "DataOutputStream must be non null");
         Objects.requireNonNull(consumer, "Consumer must be non null");
