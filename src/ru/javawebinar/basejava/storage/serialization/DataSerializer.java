@@ -51,7 +51,6 @@ public class DataSerializer implements Serializer {
     }
 
     private void writeContacts(Map<ContactType, String> contacts, DataOutputStream dos) throws IOException {
-        dos.writeInt(contacts.size());
         writeWithException(contacts.entrySet(), dos, entry -> {
             dos.writeUTF(entry.getKey().name());
             dos.writeUTF(entry.getValue());
@@ -81,13 +80,11 @@ public class DataSerializer implements Serializer {
 
     private void writeListSection(AbstractSection section, DataOutputStream dos) throws IOException {
         List<String> items = ((ListSection) section).getItems();
-        dos.writeInt(items.size());
         writeWithException(items, dos, s -> dos.writeUTF(s));
     }
 
     private void writeCompanySection(AbstractSection section, DataOutputStream dos) throws IOException {
         List<Company> companies = ((CompanySection) section).getCompanies();
-        dos.writeInt(companies.size());
         writeWithException(companies, dos, c -> writeCompany(c, dos));
     }
 
@@ -95,7 +92,6 @@ public class DataSerializer implements Serializer {
         dos.writeUTF(company.getLink().getName());
         dos.writeUTF(Objects.requireNonNullElse(company.getLink().getUrl(), ""));
         List<Period> periods = company.getPeriods();
-        dos.writeInt(periods.size());
         writeWithException(periods, dos, p -> writePeriod(p, dos));
     }
 
@@ -110,6 +106,7 @@ public class DataSerializer implements Serializer {
         Objects.requireNonNull(collection, "Collection must be non null");
         Objects.requireNonNull(dos, "DataOutputStream must be non null");
         Objects.requireNonNull(consumer, "Consumer must be non null");
+        dos.writeInt(collection.size());
         for (T t : collection) {
             consumer.accept(t);
         }
