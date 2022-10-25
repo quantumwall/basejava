@@ -26,7 +26,7 @@ public class MainStreams {
         long sum = intStream.summaryStatistics().getSum();
         return integers.stream()
                 .mapToInt(Integer::valueOf)
-                .filter(i -> i % 2 == sum % 2)
+                .filter(i -> i % 2 != sum % 2)
                 .boxed()
                 .toList();
     }
