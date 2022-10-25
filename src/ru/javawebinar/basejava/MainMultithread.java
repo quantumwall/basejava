@@ -1,7 +1,7 @@
 package ru.javawebinar.basejava;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainMultithread {
 
@@ -26,32 +26,36 @@ public class MainMultithread {
         }
     }
 
+    public static class TransferThread extends Thread {
+
+        private final Account from;
+        private final Account to;
+
+        public TransferThread(Account from, Account to) {
+            this.from = from;
+            this.to = to;
+        }
+
+        @Override
+        public void run() {
+            synchronized (from) {
+                try {
+                    sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MainMultithread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                synchronized (to) {
+                    double toTransfer = from.withDraw(345);
+                    to.deposit(toTransfer);
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) throws InterruptedException {
         var account1 = new Account(13456.23);
         var account2 = new Account(34543.3);
-        Runnable transferA1toA2 = () -> {
-            synchronized (account1) {
-                synchronized (account2) {
-                    double toTransfer = account1.withDraw(345);
-                    account2.deposit(toTransfer);
-                }
-            }
-        };
-        Runnable transferA2toA1 = () -> {
-            synchronized (account2) {
-                synchronized (account1) {
-                    double toTransfer = account2.withDraw(345);
-                    account1.deposit(toTransfer);
-                }
-            }
-        };
-        int threadsCount = 1000;
-        List<Thread> threads = new ArrayList<>(threadsCount);
-        for (int i = 0; i < threadsCount / 2; i++) {
-            threads.add(new Thread(transferA1toA2));
-            threads.add(new Thread(transferA2toA1));
-        }
-        threads.forEach(t -> t.start());
+        new TransferThread(account1, account2).start();
+        new TransferThread(account2, account1).start();
     }
 }
-
