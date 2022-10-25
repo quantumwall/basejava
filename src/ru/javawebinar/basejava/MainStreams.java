@@ -3,19 +3,14 @@ package ru.javawebinar.basejava;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class MainStreams {
 
     public static void main(String[] args) {
         System.out.println(minValue(new int[]{1, 4, 4, 3, 5, 6, 3}));
-        var list = new ArrayList<Integer>();
-        list.add(2);
-        list.add(2);
-        list.add(45);
-        list.add(43);
-        list.add(43);
-        var newList = oddOrEven(list);
-        newList.forEach(System.out::println);
+        var list = oddOrEven(getList());
+        list.forEach(System.out::println);
     }
 
     private static int minValue(int[] values) {
@@ -27,11 +22,20 @@ public class MainStreams {
     }
 
     public static List<Integer> oddOrEven(List<Integer> integers) {
-        boolean sumIsEven = integers.stream().mapToInt(Integer::valueOf).sum() % 2 == 0;
+        IntStream intStream = integers.stream().mapToInt(Integer::valueOf);
+        long sum = intStream.summaryStatistics().getSum();
         return integers.stream()
                 .mapToInt(Integer::valueOf)
-                .filter(i -> (i % 2 == 0) == sumIsEven)
+                .filter(i -> i % 2 == sum % 2)
                 .boxed()
                 .toList();
+    }
+
+    private static List<Integer> getList() {
+        var result = new ArrayList<Integer>();
+        for (int i = 1; i <= 10; i++) {
+            result.add(i);
+        }
+        return result;
     }
 }
