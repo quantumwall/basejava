@@ -3,7 +3,6 @@ package ru.javawebinar.basejava;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class MainStreams {
 
@@ -13,20 +12,20 @@ public class MainStreams {
         list.forEach(System.out::println);
     }
 
-    private static int minValue(int[] values) {
+    public static int minValue(int[] values) {
         return Arrays.stream(values)
                 .distinct()
                 .sorted()
-                .reduce((x, y) -> x * 10 + y)
-                .getAsInt();
+                .reduce(0, (x, y) -> x * 10 + y);
     }
 
     public static List<Integer> oddOrEven(List<Integer> integers) {
-        IntStream intStream = integers.stream().mapToInt(Integer::valueOf);
-        long sum = intStream.summaryStatistics().getSum();
+        boolean sumIsEven = integers.stream()
+                .mapToInt(Integer::valueOf)
+                .sum() % 2 == 0;
         return integers.stream()
                 .mapToInt(Integer::valueOf)
-                .filter(i -> i % 2 != sum % 2)
+                .filter(i -> (i % 2 == 0) != sumIsEven)
                 .boxed()
                 .toList();
     }
