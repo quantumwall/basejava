@@ -24,9 +24,7 @@ public class MainStreams {
                 .mapToInt(Integer::valueOf)
                 .sum() % 2 == 0;
         return integers.stream()
-                .mapToInt(Integer::valueOf)
                 .filter(i -> (i % 2 == 0) != sumIsEven)
-                .boxed()
                 .toList();
     }
 
