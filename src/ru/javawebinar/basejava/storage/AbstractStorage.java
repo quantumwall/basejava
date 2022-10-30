@@ -2,7 +2,6 @@ package ru.javawebinar.basejava.storage;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Logger;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
@@ -12,12 +11,7 @@ public abstract class AbstractStorage<SK> implements Storage {
     protected Comparator<Resume> compareByNameAndUuid = Comparator.comparing(Resume::getFullName)
             .thenComparing(Resume::getUuid);
 
-    protected static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
-//    private Serialization serializator;
 
-//    public void setSerializator(Serialization s) {
-//        serializator = s;
-//    }
     @Override
     public final void save(Resume r) {
         LOG.info("Save " + r);
