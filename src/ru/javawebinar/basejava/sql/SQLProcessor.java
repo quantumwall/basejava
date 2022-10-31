@@ -1,11 +1,10 @@
 package ru.javawebinar.basejava.sql;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @FunctionalInterface
-public interface SQLProcessor {
+public interface SQLProcessor<T> {
 
-    ResultSet process(PreparedStatement statement) throws SQLException;
+    T process(PreparedStatement statement) throws SQLException;
 }
