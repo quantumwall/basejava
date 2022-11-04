@@ -19,12 +19,13 @@ public class SQLHelper {
     }
 
     public <T> T execute(String query, SQLProcessor<T> processor) {
-        try ( Connection connection = connectionFactory.getConnection();  PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = connectionFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             return processor.process(statement);
         } catch (SQLException e) {
             if (isViolatesConstraint(e)) {
                 LOG.log(Level.WARNING, "Resume {0} is already exists", e.getMessage());
-                throw new ExistStorageException(e.getMessage());
+                throw new ExistStorageException(null);
             } else {
                 throw new StorageException(e);
             }
@@ -32,6 +33,6 @@ public class SQLHelper {
     }
 
     private boolean isViolatesConstraint(SQLException e) {
-        return e.getSQLState().startsWith("23");
+        return e.getSQLState().equals("23505");
     }
 }

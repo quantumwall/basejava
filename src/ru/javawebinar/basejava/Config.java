@@ -11,12 +11,12 @@ import ru.javawebinar.basejava.storage.Storage;
 public class Config {
 
     private final File PROPERTY_FILE = new File("config/resumes.properties");
-    private final Properties properties = new Properties();
     private final File storageDir;
     private final Storage storage;
 
     private Config() {
-        try ( InputStream input = new FileInputStream(PROPERTY_FILE)) {
+        try (InputStream input = new FileInputStream(PROPERTY_FILE)) {
+            Properties properties = new Properties();
             properties.load(input);
             storageDir = new File(properties.getProperty("storage.dir"));
             storage = new SQLStorage(properties.getProperty("db.url"), properties.getProperty("db.user"), properties.getProperty("db.password"));
