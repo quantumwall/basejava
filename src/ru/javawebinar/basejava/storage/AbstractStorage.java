@@ -8,7 +8,7 @@ import ru.javawebinar.basejava.model.Resume;
 
 public abstract class AbstractStorage<SK> implements Storage {
 
-    protected Comparator<Resume> compareByNameAndUuid = Comparator.comparing(Resume::getFullName)
+    protected static final Comparator<Resume> compareByNameAndUuid = Comparator.comparing(Resume::getFullName)
             .thenComparing(Resume::getUuid);
 
 

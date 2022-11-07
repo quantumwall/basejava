@@ -11,6 +11,7 @@ import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.ResumeTestData;
 
 public abstract class AbstractStorageTest {
 
@@ -25,14 +26,14 @@ public abstract class AbstractStorageTest {
     protected static final String NAME_3 = "Catherine";
     protected static final String NAME_4 = "Dana";
     protected static final String UUID_NOT_EXIST = "dummy";
-//    protected static final Resume RESUME_1 = ResumeTestData.getResume(UUID_1, NAME_1);
-//    protected static final Resume RESUME_2 = ResumeTestData.getResume(UUID_2, NAME_2);
-//    protected static final Resume RESUME_3 = ResumeTestData.getResume(UUID_3, NAME_3);
-//    protected static final Resume RESUME_4 = ResumeTestData.getResume(UUID_4, NAME_4);
-    protected static final Resume RESUME_1 = new Resume(UUID_1, NAME_1);
-    protected static final Resume RESUME_2 = new Resume(UUID_2, NAME_2);
-    protected static final Resume RESUME_3 = new Resume(UUID_3, NAME_3);
-    protected static final Resume RESUME_4 = new Resume(UUID_4, NAME_4);
+    protected static final Resume RESUME_1 = ResumeTestData.getResume(UUID_1, NAME_1);
+    protected static final Resume RESUME_2 = ResumeTestData.getResume(UUID_2, NAME_2);
+    protected static final Resume RESUME_3 = ResumeTestData.getResume(UUID_3, NAME_3);
+    protected static final Resume RESUME_4 = ResumeTestData.getResume(UUID_4, NAME_4);
+//    protected static final Resume RESUME_1 = new Resume(UUID_1, NAME_1);
+//    protected static final Resume RESUME_2 = new Resume(UUID_2, NAME_2);
+//    protected static final Resume RESUME_3 = new Resume(UUID_3, NAME_3);
+//    protected static final Resume RESUME_4 = new Resume(UUID_4, NAME_4);
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -118,7 +119,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() {
 //        Resume resumeToUpdate = ResumeTestData.getResume(UUID_1, NAME_4);
-        Resume resumeToUpdate = new Resume(UUID_1, NAME_4);
+        Resume resumeToUpdate = ResumeTestData.getResume(UUID_1, NAME_4);
         assertDoesNotThrow(() -> storage.update(resumeToUpdate));
         assertTrue(resumeToUpdate.equals(storage.get(UUID_1)));
         assertSize(3);
