@@ -1,13 +1,10 @@
 package ru.javawebinar.basejava.storage;
 
-import static ru.javawebinar.basejava.storage.AbstractStorage.compareByNameAndUuid;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -34,7 +31,7 @@ public class SQLStorage implements Storage {
         LOG.log(Level.INFO, "Update {0}", r);
         var uuid = r.getUuid();
         sqlHelper.transactionalExecute(c -> {
-            try ( var statement = c.prepareStatement("UPDATE resume SET uuid = ?, full_name = ? WHERE uuid = ?")) {
+            try (var statement = c.prepareStatement("UPDATE resume SET uuid = ?, full_name = ? WHERE uuid = ?")) {
                 statement.setString(1, uuid);
                 statement.setString(2, r.getFullName());
                 statement.setString(3, uuid);
@@ -53,20 +50,13 @@ public class SQLStorage implements Storage {
     public void save(Resume r) {
         LOG.log(Level.INFO, "Save {0}", r);
         var uuid = r.getUuid();
-        sqlHelper.execute("INSERT INTO resume (uuid, full_name) VALUES (?, ?)", s -> {
-            s.setString(1, uuid);
-            s.setString(2, r.getFullName());
-            s.execute();
-            return null;
-        });
-        sqlHelper.execute("INSERT INTO contact (resume_id, type, value) VALUES (?, ?, ?)", s -> {
-            for (Map.Entry<ContactType, String> pair : r.getContacts().entrySet()) {
-                s.setString(1, uuid);
-                s.setString(2, pair.getKey().name());
-                s.setString(3, pair.getValue());
-                s.addBatch();
+        sqlHelper.transactionalExecute(c -> {
+            try (var statement = c.prepareStatement("INSERT INTO resume (uuid, full_name) VALUES (?, ?)")) {
+                statement.setString(1, uuid);
+                statement.setString(2, r.getFullName());
+                statement.execute();
             }
-            s.executeBatch();
+            insertContacts(c, r);
             return null;
         });
     }
@@ -89,9 +79,7 @@ public class SQLStorage implements Storage {
                     }
                     var resume = new Resume(uuid, result.getString("full_name"));
                     do {
-                        var value = result.getString("value");
-                        var type = ContactType.valueOf(result.getString("type"));
-                        resume.addContact(type, value);
+                        addContact(result, resume);
                     } while (result.next());
                     return resume;
                 });
@@ -113,8 +101,8 @@ public class SQLStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         return sqlHelper.transactionalExecute(c -> {
-            Map<String, Resume> resumes = new HashMap<>();
-            try (var statement = c.prepareStatement("SELECT uuid, full_name FROM resume")) {
+            Map<String, Resume> resumes = new LinkedHashMap<>();
+            try (var statement = c.prepareStatement("SELECT uuid, full_name FROM resume ORDER BY full_name")) {
                 var result = statement.executeQuery();
                 while (result.next()) {
                     var uuid = result.getString("uuid");
@@ -126,15 +114,10 @@ public class SQLStorage implements Storage {
                 var result = statement.executeQuery();
                 while (result.next()) {
                     var uuid = result.getString("resume_id");
-                    var type = ContactType.valueOf(result.getString("type"));
-                    var value = result.getString("value");
-                    resumes.get(uuid).addContact(type, value);
+                    addContact(result, resumes.get(uuid));
                 }
             }
-            var result = new ArrayList<Resume>();
-            resumes.forEach((k, v) -> result.add(v));
-            Collections.sort(result, compareByNameAndUuid);
-            return result;
+            return new ArrayList(resumes.values());
         });
     }
 
@@ -167,5 +150,13 @@ public class SQLStorage implements Storage {
             s.executeBatch();
             return null;
         });
+    }
+
+    private void addContact(ResultSet result, Resume resume) throws SQLException {
+        var type = result.getString("type");
+        if (type != null) {
+            var value = result.getString("value");
+            resume.addContact(ContactType.valueOf(type), value);
+        }
     }
 }
