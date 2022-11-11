@@ -10,7 +10,7 @@ import ru.javawebinar.basejava.storage.Storage;
 
 public class Config {
 
-    private final File PROPERTY_FILE = new File("config/resumes.properties");
+    private final File PROPERTY_FILE = new File("/data/IT/projects/java/basejava/config/resumes.properties");
     private final File storageDir;
     private final Storage storage;
 

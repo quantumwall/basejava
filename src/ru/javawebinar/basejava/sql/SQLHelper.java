@@ -10,7 +10,8 @@ public class SQLHelper {
 
     private final ConnectionFactory connectionFactory;
 
-    public SQLHelper(String dbURL, String dbUser, String dbPassword) {
+    public SQLHelper(String dbURL, String dbUser, String dbPassword) throws ClassNotFoundException {
+        Class.forName("org.postgresql.Driver");
         connectionFactory = () -> DriverManager.getConnection(dbURL, dbUser, dbPassword);
     }
 
