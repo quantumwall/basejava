@@ -1,5 +1,8 @@
 package ru.javawebinar.basejava.web;
 
+import static ru.javawebinar.basejava.model.SectionType.OBJECTIVE;
+import static ru.javawebinar.basejava.model.SectionType.QUALIFICATIONS;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,23 +24,6 @@ import ru.javawebinar.basejava.storage.Storage;
 @WebServlet(name = "ResumeServlet", urlPatterns = {"/ResumeServlet"})
 public class ResumeServlet extends HttpServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ResumeServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ResumeServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -48,56 +34,61 @@ public class ResumeServlet extends HttpServlet {
                   <html>
                   <head>
                   <meta charset="UTF-8">
+                  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
                   <title>Resumes</title>
                   </head>
                   <body>\n""");
         String uuid = request.getParameter("uuid");
-        Resume resume = null;
+
         if (uuid != null) {
             try {
-                resume = storage.get(uuid);
+                var resume = storage.get(uuid);
+                sb.append("""
+                          <div class="container">
+                          <div class="row">
+                          <h2>%s</h2>\n""".formatted(resume.getFullName()));
+                for (Map.Entry<ContactType, String> pair : resume.getContacts().entrySet()) {
+                    sb.append(String.format("<p>%s: %s</p>\n", pair.getKey().getTitle(), pair.getValue()));
+                }
+                sb.append("</div>\n");
+                for (Map.Entry<SectionType, AbstractSection> pair : resume.getSections().entrySet()) {
+                    switch (pair.getKey()) {
+                        case PERSONAL, OBJECTIVE ->
+                            processTextSection(sb, pair);
+                        case ACHIEVEMENTS, QUALIFICATIONS ->
+                            processListSection(sb, pair);
+                    }
+                }
             } catch (NotExistStorageException e) {
                 sb.append(String.format("<p>Resume %s does not exist</p>", uuid));
             }
-        }
-        if (resume != null) {
-            sb.append("""
-                      <h2>%s</h2>
-                      <h2>%s</h2>\n""".formatted(uuid, resume.getFullName()));
-            sb.append("<div>\n");
-            for (Map.Entry<ContactType, String> pair : resume.getContacts().entrySet()) {
-                sb.append(String.format("<p>%s: %s</p>\n", pair.getKey().getTitle(), pair.getValue()));
-            }
-            sb.append("</div>\n<div>\n");
-            for (Map.Entry<SectionType, AbstractSection> pair : resume.getSections().entrySet()) {
-                switch (pair.getKey()) {
-                    case PERSONAL, OBJECTIVE ->
-                        processTextSection(sb, pair);
-                    case ACHIEVEMENTS, QUALIFICATIONS ->
-                        processListSection(sb, pair);
-                }
-            }
-
         } else {
             var resumes = storage.getAllSorted();
             sb.append("""
-                      <div>
-                      <table>""");
-            for(Resume res : resumes) {
+                      <div class="container">
+                      <table class="table">
+                      <thead class="thead-dark">
+                      <tr>
+                      <th scope="col">uuid</th>
+                      <th scope="col">name</th>
+                      </thead>
+                      <tbody>\n""");
+            for (Resume res : resumes) {
                 sb.append("""
                           <tr>
+                          <td scope="row">%s</td>
                           <td>%s</td>
-                          <td>%s</td>
-                          </tr>""".formatted(res.getUuid(), res.getFullName()));
+                          </tr>\n""".formatted(res.getUuid(), res.getFullName()));
             }
             sb.append("""
+                      </tbody>
                       </table>
-                      </div>""");
+                      </div>\n""");
         }
         sb.append("""
                   </body>
-                  </html>""");
-        try(PrintWriter out = response.getWriter()) {
+                  </html>\n""");
+        try ( PrintWriter out = response.getWriter()) {
             out.println(sb.toString());
         }
     }
@@ -106,21 +97,24 @@ public class ResumeServlet extends HttpServlet {
         var type = pair.getKey().getTitle();
         var text = ((TextSection) pair.getValue()).getText();
         sb.append("""
+                  <div class="row">
                   <h3>%s</h3>
-                  <p>%s</p>\n""".formatted(type, text));
+                  <p>%s</p>
+                  </div>""".formatted(type, text));
     }
 
     private void processListSection(StringBuilder sb, Map.Entry<SectionType, AbstractSection> pair) {
         var type = pair.getKey().getTitle();
         var items = ((ListSection) pair.getValue()).getItems();
         sb.append("""
+                  <div class="row">
                   <h3>%s</h3>
                   <ul>
                   """.formatted(type));
         for (String item : items) {
             sb.append(String.format("<li>%s</li>\n", item));
         }
-        sb.append("</ul>\n");
+        sb.append("</ul>\n</div>");
     }
 
 }

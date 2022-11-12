@@ -39,7 +39,6 @@ public class ResumeTestData {
         var achievementsSection = new ListSection(achievementsList);
         var qualificationsList = new ArrayList<String>();
         qualificationsList.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
-        qualificationsList.add("");
         qualificationsList.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
         qualificationsList.add("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle, MySQL, SQLite, MS SQL, HSQLDB");
         qualificationsList.add("Languages: Java, Scala, Python/Jython/PL-Python, JavaScript, Groovy");
