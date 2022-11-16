@@ -13,10 +13,10 @@ public class JsonParser {
     private final static Gson GSON;
 
     static {
-        GsonBuilder gb = new GsonBuilder();
-        gb.registerTypeAdapter(AbstractSection.class, new JsonSectionAdapter());
-        gb.registerTypeAdapter(LocalDate.class, new JsonLocalDateAdapter());
-        GSON = gb.create();
+        GSON = new GsonBuilder()
+                .registerTypeAdapter(AbstractSection.class, new JsonSectionAdapter())
+                .registerTypeAdapter(LocalDate.class, new JsonLocalDateAdapter())
+                .create();
     }
 
     public static <T> T read(Reader reader, Class<T> clazz) {
@@ -27,4 +27,15 @@ public class JsonParser {
         GSON.toJson(object, writer);
     }
 
+    public static <T> T read(String content, Class<T> clazz) {
+        return GSON.fromJson(content, clazz);
+    }
+
+    public static <T> String write(T object) {
+        return GSON.toJson(object);
+    }
+
+    public static <T> String write(T object, Class<T> clazz) {
+        return GSON.toJson(object, clazz);
+    }
 }
