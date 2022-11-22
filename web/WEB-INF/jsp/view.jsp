@@ -1,9 +1,10 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"  %>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ page import="ru.javawebinar.basejava.model.SectionType,
          ru.javawebinar.basejava.model.AbstractSection,
          ru.javawebinar.basejava.model.TextSection,
          ru.javawebinar.basejava.model.ListSection,
-         java.io.IOException" %>
+         java.io.IOException"
+%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%!
     private void showSection(SectionType type, AbstractSection section, JspWriter out) throws IOException {

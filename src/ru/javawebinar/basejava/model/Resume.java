@@ -20,7 +20,6 @@ public class Resume implements Comparable<Resume>, Serializable {
     private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume() {
-
     }
 
     public Resume(String fullName) {

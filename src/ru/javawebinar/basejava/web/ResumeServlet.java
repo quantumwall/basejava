@@ -10,7 +10,10 @@ import java.io.IOException;
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.ContactType;
+import ru.javawebinar.basejava.model.ListSection;
 import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.SectionType;
+import ru.javawebinar.basejava.model.TextSection;
 import ru.javawebinar.basejava.storage.Storage;
 
 @WebServlet("/resume")
@@ -47,11 +50,11 @@ public class ResumeServlet extends HttpServlet {
                 }
             }
             case "edit", "view" -> {
-                resume = storage.get(uuid);
+                resume = uuid != null ? storage.get(uuid) : new Resume();
             }
             default ->
                 throw new IllegalArgumentException("Action " + action + " is not supported");
-        };
+        }
         request.setAttribute("resume", resume);
         request.getRequestDispatcher("edit".equals(action) ? "/WEB-INF/jsp/edit.jsp" : "/WEB-INF/jsp/view.jsp").forward(request, response);
     }
@@ -60,17 +63,36 @@ public class ResumeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        var resume = storage.get(uuid);
+        var resume = !uuid.isBlank() ? storage.get(uuid) : new Resume(fullName);
         resume.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && !value.isBlank()) {
-                resume.addContact(type, value);
+                resume.addContact(type, value.trim());
             } else {
                 resume.getContacts().remove(type);
             }
         }
-        storage.update(resume);
+        for(SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+            if(value != null && !value.isBlank()) {
+                switch(type) {
+                    case PERSONAL, OBJECTIVE -> {
+                        resume.addSection(type, new TextSection(value.trim()));
+                    }
+                    case ACHIEVEMENTS, QUALIFICATIONS -> {
+                        resume.addSection(type, new ListSection(value.trim().lines().toList()));
+                    }
+                }
+            } else {
+                resume.getSections().remove(type);
+            }
+        }
+        if(uuid.isBlank()) {
+            storage.save(resume);
+        } else {
+            storage.update(resume);
+        }
         response.sendRedirect("resume");
     }
 
