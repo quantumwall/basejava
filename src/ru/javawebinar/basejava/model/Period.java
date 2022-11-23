@@ -95,20 +95,4 @@ public class Period implements Serializable {
     public String toString() {
         return "Period{" + "title=" + title + ", description=" + description + ", entryDate=" + entryDate + ", exitDate=" + exitDate + '}';
     }
-
-//    public void display() {
-//        System.out.printf("%s - %s\n", getFormattedDate(entryDate, formatter), getFormattedDate(exitDate, formatter));
-//        System.out.println(title);
-//        System.out.println(description);
-//    }
-//
-//    private String getFormattedDate(LocalDate date, DateTimeFormatter formatter) {
-//        if (date == null) {
-//            return "настоящее время";
-//        }
-//        if (formatter == null) {
-//            return date.toString();
-//        }
-//        return date.format(formatter);
-//    }
 }

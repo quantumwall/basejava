@@ -11,8 +11,9 @@
         <title>Resumes</title>
     </head>
     <body>
+        <div class="wrapper">
         <jsp:include page="fragments/header.jsp"/>
-        <main role="main" class="container">
+        <main role="main" class="container main">
             <section>
                 <div class="container">
                     <a href="resume?action=edit"><button type="button" class="btn btn-outline-success btn-sm">Создать</button></a>
@@ -41,5 +42,6 @@
             </section>
         </main>
         <jsp:include page="fragments/footer.jsp"/>
+        </div>
     </body>
 </html>

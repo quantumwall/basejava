@@ -1,10 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ page import="ru.javawebinar.basejava.model.SectionType,
-         ru.javawebinar.basejava.model.AbstractSection,
-         ru.javawebinar.basejava.model.TextSection,
-         ru.javawebinar.basejava.model.ListSection,
-         java.io.IOException"
-%>
+<%@ page import="ru.javawebinar.basejava.model.*,
+         java.io.IOException,
+         java.time.format.DateTimeFormatter,
+         java.time.LocalDate"
+         %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%!
     private void showSection(SectionType type, AbstractSection section, JspWriter out) throws IOException {
@@ -17,11 +16,15 @@
             case QUALIFICATIONS:
                 showListSection(section, out);
                 break;
+            case EXPERIENCE:
+            case EDUCATION:
+                showCompanySection(section, out);
+                break;
         }
     }
 %>
 <%!
-   private void showTextSection(AbstractSection section, JspWriter out) throws IOException {
+    private void showTextSection(AbstractSection section, JspWriter out) throws IOException {
         out.println("<p>" + ((TextSection) section).getText() + "</p>\n");
     } 
 %>
@@ -38,7 +41,40 @@
 %>
 <%!
     private void showCompanySection(AbstractSection section, JspWriter out) throws IOException {
-        
+        var sb = new StringBuilder();
+        var dateFormatter = DateTimeFormatter.ofPattern("MM/yyyy");
+        for(Company company : ((CompanySection) section).getCompanies()) {
+            String url = company.getLink().getUrl();
+            String name = company.getLink().getName();
+            sb.append("<div class=\"container\">\n")
+              .append("<div class=\"row\">\n")
+              .append("<div class=\"col-sm-3\">\n")
+              .append("</div>\n")
+              .append("<div class=\"col\">\n");
+            if(url != null) {
+                sb.append(String.format("<p><a href='%s'>%s</a></p>\n", url, name));
+            } else {
+                sb.append(String.format("<p>%s</p>\n", name));
+            }               
+            sb.append("</div>\n")
+              .append("</div>\n");
+            for(Period period : company.getPeriods()) {
+                var description = period.getDescription();
+                var exitDate = period.getExitDate();
+                sb.append("<div class=\"row\">\n")
+                  .append("<div class=\"col-sm-3\">\n")
+                  .append(String.format("<p>%s - %s</p>\n", dateFormatter.format(period.getEntryDate()),
+                                exitDate.isAfter(LocalDate.now()) ? "сегодня" : dateFormatter.format(exitDate)))
+                  .append("</div>\n")
+                  .append("<div class=\"col\">\n")
+                  .append(String.format("<p>%s</p>\n<p>%s</p>\n", period.getTitle(), description != null ? description : ""))
+                  .append("</div>\n")
+                  .append("</div>\n");
+            }
+            sb.append("</div>\n")
+              .append("</div>\n");
+        }
+        out.print(sb.toString());
     }
 %>
 <html>
@@ -50,8 +86,9 @@
         <title>Резюме ${resume.fullName}</title>
     </head>
     <body>
+        <div class="wrapper">
         <jsp:include page="fragments/header.jsp"/>
-        <main>
+        <main class="container main">
             <section class="row">
                 <h2>${resume.fullName}&nbsp;<a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png"></a></h2>
                 <div class="col-sm">
@@ -77,5 +114,6 @@
             </c:forEach>
         </main>
         <jsp:include page="fragments/footer.jsp"/>
+        </div>
     </body>
 </html>

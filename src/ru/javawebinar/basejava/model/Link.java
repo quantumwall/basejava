@@ -60,5 +60,4 @@ public class Link implements Serializable {
     public String toString() {
         return "Link{" + "name=" + name + ", url=" + url + '}';
     }
-
 }

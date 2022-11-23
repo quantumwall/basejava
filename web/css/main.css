@@ -1,5 +1,33 @@
-main {
-    width: 90%;
+html, body {
+    height: 100%;
+}
+
+.wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.main {
+    width: 70%;
+    margin: auto;
+    margin-top: 50px;
+    flex: 1 1 auto;
+}
+
+header{
+    background-color: aliceblue;
+    min-height: 10%;
+}
+
+footer {
+    background-color: aliceblue;
+}
+
+header div{
+    width: 70%;
     margin: auto;
 }
 
+textarea {
+    padding: 5px;
+}
