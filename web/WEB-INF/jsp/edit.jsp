@@ -43,8 +43,8 @@
                             <c:choose>
                                 <c:when test="${type == SectionType.PERSONAL || type == SectionType.OBJECTIVE}">
                                     <dd><input type="text" name="${type.name()}" size="30" value="${resume.getSection(type)}"/></dd>
-                                    </c:when>
-                                    <c:when test="${type == SectionType.ACHIEVEMENTS || type == SectionType.QUALIFICATIONS}">
+                                </c:when>
+                                <c:when test="${type == SectionType.ACHIEVEMENTS || type == SectionType.QUALIFICATIONS}">
                                     <dd><textarea name="${type.name()}" rows="10" cols="100"><c:forEach var="item" items="${resume.getSection(type).getItems()}"><c:out value="${item}&#10;" escapeXml="false"/></c:forEach></textarea></dd>
                                 </c:when>
                             </c:choose>
