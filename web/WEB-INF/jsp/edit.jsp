@@ -14,49 +14,49 @@
     </head>
     <body>
         <div class="wrapper">
-        <jsp:include page="fragments/header.jsp"/>
-        <main class="container main">
-            <section>
-                <form method="post" action="/resume" enctype="application/x-www-form-urlencoded">
-                    <input type="hidden" name="uuid" value="${resume.uuid}">
-                    <dl>
-                        <dt>Имя:</dt>
-                        <dd><input type="text" name="fullName" size=50 value="${resume.fullName}" required></dd>
-                    </dl>
-                    <h3>Контакты:</h3>
-                    <c:forEach var="type" items="${ContactType.values()}">
+            <jsp:include page="fragments/header.jsp"/>
+            <main class="container main">
+                <section>
+                    <form method="post" action="/resume" enctype="application/x-www-form-urlencoded">
+                        <input type="hidden" name="uuid" value="${resume.uuid}">
                         <dl>
-                            <dt>${type.title}</dt>
-                            <c:choose>
-                                <c:when test="${type == ContactType.EMAIL}">
-                                    <dd><input type="email" name="${type.name()}" size=30 value="${resume.getContact(type)}"></dd>
+                            <dt>Имя:</dt>
+                            <dd><input type="text" name="fullName" size=50 value="${resume.fullName}" required></dd>
+                        </dl>
+                        <h3>Контакты:</h3>
+                        <c:forEach var="type" items="${ContactType.values()}">
+                            <dl>
+                                <dt>${type.title}</dt>
+                                <c:choose>
+                                    <c:when test="${type == ContactType.EMAIL}">
+                                        <dd><input type="email" name="${type.name()}" size=30 value="${resume.getContact(type)}"></dd>
                                     </c:when>
                                     <c:otherwise>
-                                    <dd><input type="text" name="${type.name()}" size=30 value="${resume.getContact(type)}"></dd>
+                                        <dd><input type="text" name="${type.name()}" size=30 value="${resume.getContact(type)}"></dd>
                                     </c:otherwise>
                                 </c:choose>
-                        </dl>
-                    </c:forEach>
-                    <c:forEach var="type" items="${SectionType.values()}">
-                        <dl>
-                            <dt>${type.title}</dt>
-                            <c:choose>
-                                <c:when test="${type == SectionType.PERSONAL || type == SectionType.OBJECTIVE}">
-                                    <dd><input type="text" name="${type.name()}" size="30" value="${resume.getSection(type)}"/></dd>
-                                </c:when>
-                                <c:when test="${type == SectionType.ACHIEVEMENTS || type == SectionType.QUALIFICATIONS}">
-                                    <dd><textarea name="${type.name()}" rows="10" cols="100"><c:forEach var="item" items="${resume.getSection(type).getItems()}"><c:out value="${item}&#10;" escapeXml="false"/></c:forEach></textarea></dd>
-                                </c:when>
-                            </c:choose>
-                        </dl>
-                    </c:forEach>
-                    <hr>
-                    <button type="submit">Сохранить</button>
-                    <button type="reset">Отменить</button>
-                </form>
-            </section>    
-        </main>
-        <jsp:include page="fragments/footer.jsp"/>
+                            </dl>
+                        </c:forEach>
+                        <c:forEach var="type" items="${SectionType.values()}">
+                            <dl>
+                                <dt>${type.title}</dt>
+                                <c:choose>
+                                    <c:when test="${type == SectionType.PERSONAL || type == SectionType.OBJECTIVE}">
+                                        <dd><input type="text" name="${type.name()}" size="30" value="${resume.getSection(type)}"/></dd>
+                                    </c:when>
+                                    <c:when test="${type == SectionType.ACHIEVEMENTS || type == SectionType.QUALIFICATIONS}">
+                                        <dd><textarea name="${type.name()}" rows="10" cols="100"><c:forEach var="item" items="${resume.getSection(type).getItems()}"><c:out value="${item}&#10;" escapeXml="false"/></c:forEach></textarea></dd>
+                                    </c:when>
+                                </c:choose>
+                            </dl>
+                        </c:forEach>
+                        <hr>
+                        <button type="submit">Сохранить</button>
+                        <a href="/resume"><button type="button">Отменить</button></a>
+                    </form>
+                </section>    
+            </main>
+            <jsp:include page="fragments/footer.jsp"/>
         </div>
     </body>
 </html>

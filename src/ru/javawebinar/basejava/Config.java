@@ -10,9 +10,8 @@ import ru.javawebinar.basejava.storage.Storage;
 
 public class Config {
 
-//    private final File PROPERTY_FILE = new File("C:\\Users\\liber\\IT\\projects\\java\\basejava\\config\\resumes.properties");
-    private final File PROPERTY_FILE = new File("/data/IT/projects/java/basejava/config/resumes.properties");
-//    private final File PROPERTY_FILE = new File("D:\\IT\\projects\\java\\basejava\\config\\resumes.properties");
+//    private final File PROPERTY_FILE = new File("/data/IT/projects/java/basejava/config/resumes.properties");
+    private final String PROPERTY_FILE = System.getenv("BASEJAVA_PROPS");
     private final File storageDir;
     private final Storage storage;
 
@@ -23,7 +22,7 @@ public class Config {
             storageDir = new File(properties.getProperty("storage.dir"));
             storage = new SQLStorage(properties.getProperty("db.url"), properties.getProperty("db.user"), properties.getProperty("db.password"));
         } catch (IOException e) {
-            throw new IllegalStateException("Invalig config file " + PROPERTY_FILE.getAbsolutePath());
+            throw new IllegalStateException("Invalig config file " + PROPERTY_FILE);
         }
     }
 

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.ContactType;
@@ -73,22 +74,30 @@ public class ResumeServlet extends HttpServlet {
                 resume.getContacts().remove(type);
             }
         }
-        for(SectionType type : SectionType.values()) {
+        for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
-            if(value != null && !value.isBlank()) {
-                switch(type) {
+            if (value != null && !value.isBlank()) {
+                switch (type) {
                     case PERSONAL, OBJECTIVE -> {
                         resume.addSection(type, new TextSection(value.trim()));
                     }
                     case ACHIEVEMENTS, QUALIFICATIONS -> {
-                        resume.addSection(type, new ListSection(value.trim().lines().toList()));
+                        var items = new ArrayList<String>();
+                        value.trim().lines().forEach(s -> {
+                            var item = s.replaceAll("\n|\r\n", "");
+                            if (!item.isBlank()) {
+                                items.add(item);
+                            }
+
+                        });
+                        resume.addSection(type, new ListSection(items));
                     }
                 }
             } else {
                 resume.getSections().remove(type);
             }
         }
-        if(uuid.isBlank()) {
+        if (uuid.isBlank()) {
             storage.save(resume);
         } else {
             storage.update(resume);
