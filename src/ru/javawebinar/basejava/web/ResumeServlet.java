@@ -92,6 +92,9 @@ public class ResumeServlet extends HttpServlet {
                         });
                         resume.addSection(type, new ListSection(items));
                     }
+                    default -> {
+                        System.out.println("company section");
+                    }
                 }
             } else {
                 resume.getSections().remove(type);

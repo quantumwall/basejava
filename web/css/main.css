@@ -23,11 +23,11 @@ footer {
     background-color: aliceblue;
 }
 
-header div{
+header div {
     width: 70%;
     margin: auto;
 }
 
-textarea {
-    padding: 5px;
+.period {
+    margin-left: 100px;
 }
