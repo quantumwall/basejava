@@ -108,7 +108,7 @@ public class ResumeServlet extends HttpServlet {
                                 String[] requestExitDate = request.getParameterValues(basename + "exitDate");
                                 String[] requestTitle = request.getParameterValues(basename + "title");
                                 String[] requestDescription = request.getParameterValues(basename + "description");
-                                var link = new Link(requestCompanies[i].trim(), requestUrl[i].trim());
+                                var link = new Link(requestCompanies[i].trim(), !requestUrl[i].isBlank() ? requestUrl[i].trim() : null);
                                 var periods = new ArrayList<Period>();
                                 for (int j = 0; j < requestEntryDate.length; j++) {
                                     periods.add(new Period(requestTitle[j], requestDescription[j], DateUtil.parse(requestEntryDate[j]), DateUtil.parse(requestExitDate[j])));

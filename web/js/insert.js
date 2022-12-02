@@ -9,10 +9,6 @@ const periodTempl = `<div class="row">
                 <div class="col-sm-2">
                     <input class="form-control" type="text" name="\${type}\${count}exitDate" placeholder="Окончание" onfocus="(this.type = 'month')" onblur="(this.type = 'text')">
                 </div>
-                <div class="col">
-                    <input type="checkbox" id="present">
-                    <label for="present">настоящее время</label>
-                </div>
             </div>
         </div>
         <div class="mb-3">

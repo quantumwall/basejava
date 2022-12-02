@@ -42,7 +42,6 @@
 <%!
     private void showCompanySection(AbstractSection section, JspWriter out) throws IOException {
         var sb = new StringBuilder();
-//        var dateFormatter = DateTimeFormatter.ofPattern("MM/yyyy");
         for(Company company : ((CompanySection) section).getCompanies()) {
             String url = company.getLink().getUrl();
             String name = company.getLink().getName();
@@ -70,8 +69,7 @@
                   .append("</div>\n")
                   .append("</div>\n");
             }
-            sb.append("</div>\n")
-              .append("</div>\n");
+            sb.append("</div>\n");
         }
         out.print(sb.toString());
     }
