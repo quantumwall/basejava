@@ -6,7 +6,7 @@ import static ru.javawebinar.basejava.model.SectionType.QUALIFICATIONS;
 import ru.javawebinar.basejava.model.ContactType;
 import ru.javawebinar.basejava.model.Resume;
 import java.io.*;
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -147,8 +147,8 @@ public class DataSerializer implements Serializer {
     private Period readPeriod(DataInputStream dis) throws IOException {
         String title = dis.readUTF();
         String description = dis.readUTF();
-        LocalDate entryDate = LocalDate.parse(dis.readUTF(), FORMATTER);
-        LocalDate exitDate = LocalDate.parse(dis.readUTF(), FORMATTER);
+        YearMonth entryDate = YearMonth.parse(dis.readUTF(), FORMATTER);
+        YearMonth exitDate = YearMonth.parse(dis.readUTF(), FORMATTER);
         return new Period(title, description.length() > 0 ? description : null, entryDate, exitDate);
     }
 

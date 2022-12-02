@@ -2,7 +2,9 @@
 <%@ page import="ru.javawebinar.basejava.model.ContactType,
          ru.javawebinar.basejava.model.SectionType,
          ru.javawebinar.basejava.model.TextSection,
-         ru.javawebinar.basejava.model.ListSection"%>
+         ru.javawebinar.basejava.model.ListSection,
+         java.time.YearMonth,
+         ru.javawebinar.basejava.util.DateUtil"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
     <head>
@@ -69,42 +71,46 @@
                                     </c:when>
                                     <c:otherwise>
                                         <div class="form-group">
-                                            <div class="mb-3">
-                                                <input class="form-control" type="text" name="${type}" placeholder="Название организации">
-                                            </div>
-                                            <div class="mb-3">
-                                                <input class="form-control" type="url" name="${type}url" placeholder="Сайт организации">
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-1"></div>
-                                                <div class="col">
-                                                    <div class="mb-3">
-                                                        <div class="row">
-                                                            <div class="col-sm-2">
-                                                                <input class="form-control" type="text" name="${type}entryDate" placeholder="Начало" onfocus="(this.type = 'date')" onblur="(this.type = 'text')">
+                                            <c:forEach var="company" items="${resume.getSection(type).getCompanies()}" varStatus="count">
+                                                <div class="mb-3">
+                                                    <input class="form-control" type="text" name="${type}" value="${company.getLink().getName()}" placeholder="Название организации">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <input class="form-control" type="url" name="${type}url" value="${company.getLink().getUrl()}" placeholder="Сайт организации">
+                                                </div>
+                                                <c:forEach var="period" items="${company.getPeriods()}">
+                                                    <div class="row">
+                                                        <div class="col-1"></div>
+                                                        <div class="col">
+                                                            <div class="mb-3">
+                                                                <div class="row">
+                                                                    <div class="col-sm-2">
+                                                                        <input class="form-control" type="text" name="${type}${count.index}entryDate" value="${DateUtil.format(period.getEntryDate())}" placeholder="Начало" onfocus="(this.type = 'month')" onblur="(this.type = 'text')">
+                                                                    </div>
+                                                                    <div class="col-sm-2">
+                                                                        <input class="form-control" type="text" name="${type}${count.index}exitDate" value="${DateUtil.format(period.getExitDate())}" placeholder="Окончание" onfocus="(this.type = 'month')" onblur="(this.type = 'text')">
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <input type="checkbox" id="present">
+                                                                        <label for="present">настоящее время</label>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <div class="col-sm-2">
-                                                                <input class="form-control" type="text" name="${type}exitDate" placeholder="Окончание" onfocus="(this.type = 'date')" onblur="(this.type = 'text')">
+                                                            <div class="mb-3">
+                                                                <input class="form-control" type="text" name="${type}${count.index}title" value="${period.getTitle()}" placeholder="Заголовок">
                                                             </div>
-                                                            <div class="col">
-                                                                <input type="checkbox" id="present">
-                                                                <label for="present">настоящее время</label>
-                                                            </div>
+                                                            <div class="mb-3">
+                                                                <textarea class="form-control" type="text" name="${type}${count.index}description" placeholder="Описание">${period.getDescription()}</textarea>
+                                                            </div> 
                                                         </div>
                                                     </div>
-                                                    <div class="mb-3">
-                                                        <input class="form-control" type="text" name="${type}title" placeholder="Заголовок">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <input class="form-control" type="text" name="${type}description" placeholder="Описание">
-                                                    </div> 
-                                                </div>
-                                            </div>
+                                                </c:forEach>
+                                            </c:forEach>
                                         </div>
                                         <hr>
                                         <div id="${type}controlButtons" class="form-group">
-                                            <button class="btn btn-outline-warning btn-sm" type="button" onclick="addPeriod(this, ${type});">Добавить период</button>
-                                            <button class="btn btn-outline-info btn-sm" type="button" onclick="addCompany(this, ${type});">Добавить организацию</button>
+                                            <button id="${type}addPeriod" class="btn btn-outline-warning btn-sm" type="button" onclick="addPeriod(this, '${type}');">Добавить период</button>
+                                            <button id="${type}addCompany" class="btn btn-outline-info btn-sm" type="button" onclick="addCompany(this, '${type}');">Добавить организацию</button>
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
@@ -117,7 +123,7 @@
                 </section>    
             </main>
             <jsp:include page="fragments/footer.jsp"/>
-            <script src="/js/insertPeriod.js"></script>
         </div>
+        <script src="/js/insert.js"></script>
     </body>
 </html>

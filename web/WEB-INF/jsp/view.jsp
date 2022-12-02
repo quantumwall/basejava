@@ -2,7 +2,7 @@
 <%@ page import="ru.javawebinar.basejava.model.*,
          java.io.IOException,
          java.time.format.DateTimeFormatter,
-         java.time.LocalDate"
+         ru.javawebinar.basejava.util.DateUtil"
          %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%!
@@ -42,7 +42,7 @@
 <%!
     private void showCompanySection(AbstractSection section, JspWriter out) throws IOException {
         var sb = new StringBuilder();
-        var dateFormatter = DateTimeFormatter.ofPattern("MM/yyyy");
+//        var dateFormatter = DateTimeFormatter.ofPattern("MM/yyyy");
         for(Company company : ((CompanySection) section).getCompanies()) {
             String url = company.getLink().getUrl();
             String name = company.getLink().getName();
@@ -63,8 +63,7 @@
                 var exitDate = period.getExitDate();
                 sb.append("<div class=\"row\">\n")
                   .append("<div class=\"col-sm-3\">\n")
-                  .append(String.format("<p>%s - %s</p>\n", dateFormatter.format(period.getEntryDate()),
-                                exitDate.isAfter(LocalDate.now()) ? "сегодня" : dateFormatter.format(exitDate)))
+                  .append(String.format("<p>%s - %s</p>\n", DateUtil.format(period.getEntryDate()), DateUtil.format(period.getExitDate())))
                   .append("</div>\n")
                   .append("<div class=\"col\">\n")
                   .append(String.format("<p>%s</p>\n<p>%s</p>\n", period.getTitle(), description != null ? description : ""))

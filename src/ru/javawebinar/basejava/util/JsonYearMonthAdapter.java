@@ -8,21 +8,21 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
-public class JsonLocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+public class JsonYearMonthAdapter implements JsonSerializer<YearMonth>, JsonDeserializer<YearMonth> {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-yyyy");
 
     @Override
-    public JsonElement serialize(LocalDate date, Type type, JsonSerializationContext jsc) {
+    public JsonElement serialize(YearMonth date, Type type, JsonSerializationContext jsc) {
         return new JsonPrimitive(formatter.format(date));
     }
 
     @Override
-    public LocalDate deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
-        return LocalDate.parse(je.getAsString(), formatter);
+    public YearMonth deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+        return YearMonth.parse(je.getAsString(), formatter);
     }
 
 }

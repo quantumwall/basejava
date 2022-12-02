@@ -6,7 +6,7 @@ import ru.javawebinar.basejava.model.AbstractSection;
 
 import java.io.Reader;
 import java.io.Writer;
-import java.time.LocalDate;
+import java.time.YearMonth;
 
 public class JsonParser {
 
@@ -15,7 +15,7 @@ public class JsonParser {
     static {
         GSON = new GsonBuilder()
                 .registerTypeAdapter(AbstractSection.class, new JsonSectionAdapter())
-                .registerTypeAdapter(LocalDate.class, new JsonLocalDateAdapter())
+                .registerTypeAdapter(YearMonth.class, new JsonYearMonthAdapter())
                 .create();
     }
 

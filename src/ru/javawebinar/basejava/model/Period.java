@@ -4,10 +4,10 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Objects;
 import ru.javawebinar.basejava.util.DateUtil;
-import ru.javawebinar.basejava.util.XmlLocalDateAdapter;
+import ru.javawebinar.basejava.util.XmlYearMonthAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Period implements Serializable {
@@ -15,16 +15,16 @@ public class Period implements Serializable {
     private static final long serialVersionUID = 1L;
     private String title;
     private String description;
-    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
-    private LocalDate entryDate;
-    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
-    private LocalDate exitDate;
+    @XmlJavaTypeAdapter(XmlYearMonthAdapter.class)
+    private YearMonth entryDate;
+    @XmlJavaTypeAdapter(XmlYearMonthAdapter.class)
+    private YearMonth exitDate;
     
     public Period() {
         
     }
 
-    public Period(String title, String description, LocalDate entryDate, LocalDate exitDate) {
+    public Period(String title, String description, YearMonth entryDate, YearMonth exitDate) {
         Objects.requireNonNull(title, "title must be non null");
         Objects.requireNonNull(entryDate, "entryDate must be non null");
         this.title = title;
@@ -33,11 +33,11 @@ public class Period implements Serializable {
         this.exitDate = Objects.requireNonNullElse(exitDate, DateUtil.NOW);
     }
 
-    public LocalDate getEntryDate() {
+    public YearMonth getEntryDate() {
         return entryDate;
     }
 
-    public LocalDate getExitDate() {
+    public YearMonth getExitDate() {
         return exitDate;
     }
 

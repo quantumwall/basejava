@@ -10,12 +10,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
+import ru.javawebinar.basejava.model.Company;
+import ru.javawebinar.basejava.model.CompanySection;
 import ru.javawebinar.basejava.model.ContactType;
+import ru.javawebinar.basejava.model.Link;
 import ru.javawebinar.basejava.model.ListSection;
+import ru.javawebinar.basejava.model.Period;
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.model.SectionType;
 import ru.javawebinar.basejava.model.TextSection;
 import ru.javawebinar.basejava.storage.Storage;
+import ru.javawebinar.basejava.util.DateUtil;
 
 @WebServlet("/resume")
 public class ResumeServlet extends HttpServlet {
@@ -93,7 +98,25 @@ public class ResumeServlet extends HttpServlet {
                         resume.addSection(type, new ListSection(items));
                     }
                     default -> {
-                        System.out.println("company section");
+                        var companies = new ArrayList<Company>();
+                        String[] requestCompanies = request.getParameterValues(type.name());
+                        String[] requestUrl = request.getParameterValues(type.name() + "url");
+                        for (int i = 0; i < requestCompanies.length; i++) {
+                            var basename = type.name() + i;
+                            if (!requestCompanies[i].trim().isBlank()) {
+                                String[] requestEntryDate = request.getParameterValues(basename + "entryDate");
+                                String[] requestExitDate = request.getParameterValues(basename + "exitDate");
+                                String[] requestTitle = request.getParameterValues(basename + "title");
+                                String[] requestDescription = request.getParameterValues(basename + "description");
+                                var link = new Link(requestCompanies[i].trim(), requestUrl[i].trim());
+                                var periods = new ArrayList<Period>();
+                                for (int j = 0; j < requestEntryDate.length; j++) {
+                                    periods.add(new Period(requestTitle[j], requestDescription[j], DateUtil.parse(requestEntryDate[j]), DateUtil.parse(requestExitDate[j])));
+                                }
+                                companies.add(new Company(link, periods));
+                            }
+                        }
+                        resume.addSection(type, new CompanySection(companies));
                     }
                 }
             } else {
